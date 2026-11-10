@@ -142,8 +142,15 @@ npx vercel login
 npx vercel deploy --prod
 ```
 
-현재 클라우드에서 배포를 시도했으나 Vercel API/사이트 접속이 네트워크 정책의 CONNECT 403으로 차단됐습니다. 기존 Vercel 인증은 없고, CLI 임시 배포도 이 시도에서는 제공되지 않았습니다. 실제 배포 URL은 아직 생성되지 않았습니다. 이 환경에서 재개하려면 인터넷 허용 목록에 `api.vercel.com`, `vercel.com`, `auth.vercel.com`을 추가하고, 이후 생성되는 사이트를 검증하기 위한 `*.vercel.app` 접근을 허용해야 합니다. 인증 정보는 채팅에 적지 말고 Vercel 로그인 또는 환경 설정의 안전한 자격 증명 기능을 사용하세요.
+현재 클라우드에서 배포를 시도했으나 Vercel API/사이트 접속이 네트워크 정책의 CONNECT 403으로 차단됐습니다. 기존 Vercel 인증은 없고, CLI 임시 배포도 이 시도에서는 제공되지 않았습니다. 사용자가 제공한 배포 대상 주소는 https://ipp-portfolio-hazel.vercel.app/ 이며, 이 클라우드에서는 접근 차단으로 실제 배포 상태를 직접 검증하지 못했습니다. 이 환경에서 재개하려면 인터넷 허용 목록에 `api.vercel.com`, `vercel.com`, `auth.vercel.com`을 추가하고, 이후 생성되는 사이트를 검증하기 위한 `*.vercel.app` 접근을 허용해야 합니다. 인증 정보는 채팅에 적지 말고 Vercel 로그인 또는 환경 설정의 안전한 자격 증명 기능을 사용하세요.
 
 ## 카드·기술 그리드·트레일 개선
 
 카테고리별 개별 기술 카드, 테두리 마스크를 이용한 포인터 강조, 캐시된 다층 꽃잎 트레일, 갤러리와 일치하는 번호/상세 탐색 순서, View Source를 적용했습니다. 상세의 선택적 `visuals` 배열에 실제 이미지·차트·다이어그램을 연결할 수 있습니다. 자료가 없으면 빈 카드나 임의 이미지는 생성하지 않습니다. 자세한 변경 파일·실제 Chromium 검사·전후 화면·영상은 [검증 보고서](docs/design-refinement/README.md)를 확인하세요.
+
+
+## 현재 콘텐츠 및 Skills 구성
+
+Hero/소개/프로젝트/타임라인/연락처 문구를 구현·실험·검증 경험 중심으로 정리했습니다. Skills는 **Project Experience 12개**와 **Coursework / Academic Experience 4개**로 구분합니다. 브랜드 아이콘은 로컬 `simple-icons` 패키지의 실제 SVG 경로를 정적 HTML에 포함합니다. 세부 선정 근거와 날짜 확인 상태, Before/After, 브라우저 증거는 [콘텐츠 개선 보고서](docs/content-refinement/README.md)에 정리했습니다.
+
+`src/data.ts`의 `contentSettings.application.enabled`는 기본 false입니다. 기업 지원용으로 사용할 때 company·role의 공식 명칭을 확인하고 enabled를 true로 바꾸세요. program은 공식 명칭을 확인하기 전까지 null로 둡니다. `contentSettings.showPhone`을 false로 바꾸면 전화번호만 숨길 수 있습니다. 설정 변경 후 다시 빌드해야 정적 페이지에 반영됩니다.
