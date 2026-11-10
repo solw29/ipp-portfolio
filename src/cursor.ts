@@ -22,6 +22,30 @@ export function initCursor() {
   const editable = 'input, textarea, select, [contenteditable]:not([contenteditable="false"]), [role="textbox"], [data-native-cursor], video, iframe, embed';
 
 
+  // Rasterize layered petals once; avoid repeated blur/gradient work in the frame loop.
+  const petalStamp = document.createElement('canvas');
+  petalStamp.width = 160;
+  petalStamp.height = 100;
+  const stamp = petalStamp.getContext('2d');
+  if (stamp) {
+    stamp.translate(80, 50);
+    for (const [angle,alpha,offset,scale] of [[-.16,.55,-4,1.1],[.20,.35,5,.9],[0,.65,0,.65]]) {
+      stamp.save();
+      stamp.rotate(angle);
+      stamp.globalAlpha=alpha;
+      stamp.filter='blur(1px)';
+      const gradient=stamp.createRadialGradient(14,0,0,0,0,70);
+      gradient.addColorStop(0,'rgba(60,211,231,.65)');
+      gradient.addColorStop(.45,'rgba(38,185,210,.36)');
+      gradient.addColorStop(1,'rgba(27,167,194,0)');
+      stamp.fillStyle=gradient;
+      stamp.beginPath();
+      stamp.ellipse(-6,offset,63,22*scale,0,0,Math.PI*2);
+      stamp.fill();
+      stamp.restore();
+    }
+  }
+
   function resize() {
     dpr = Math.min(devicePixelRatio || 1, 1.5);
     canvas!.width = Math.round(innerWidth * dpr);
@@ -78,7 +102,7 @@ export function initCursor() {
       const a = points[Math.max(0, i-1)], b = points[i], c = points[i+1], d = points[Math.min(points.length-1, i+2)];
       const distance = Math.hypot(c.x-b.x,c.y-b.y);
       if (distance < 0.5) continue;
-      const steps = Math.min(5, Math.max(1, Math.ceil(distance/9)));
+      const steps = Math.min(3, Math.max(1, Math.ceil(distance/12)));
       for (let s=0; s<steps; s++) {
         const t = s / steps;
         const time = b.t + (c.t-b.t)*t;
@@ -87,20 +111,13 @@ export function initCursor() {
         const p = spline(a,b,c,d,t), q = spline(a,b,c,d,Math.min(1,t+.06));
         // Overlapping tapered petals vary in width along the spline, never a line stroke.
         const petal = .65 + .35 * Math.sin((i+t)*.82);
-        const width = (6 + Math.min(distance*.2,8)) * petal * life;
-        const length = (10 + Math.min(distance*.4,15)) * (.4 + life*.6);
+        const width = (10 + Math.min(distance*.3,12)) * petal * life;
+        const length = (16 + Math.min(distance*.5,22)) * (.4 + life*.6);
         ctx!.save();
         ctx!.translate(p.x,p.y);
         ctx!.rotate(Math.atan2(q.y-p.y,q.x-p.x));
-        ctx!.filter = `blur(${(.35+(1-life)*1.2).toFixed(1)}px)`;
-        const g = ctx!.createRadialGradient(length*.25,0,0,0,0,length);
-        g.addColorStop(0,`rgba(60,211,231,${(.52*life*life).toFixed(3)})`);
-        g.addColorStop(.45,`rgba(38,185,210,${(.30*life*life).toFixed(3)})`);
-        g.addColorStop(1,'rgba(27,167,194,0)');
-        ctx!.fillStyle = g;
-        ctx!.beginPath();
-        ctx!.ellipse(0,0,length,width,0,0,Math.PI*2);
-        ctx!.fill();
+        ctx!.globalAlpha=life*life;
+        ctx!.drawImage(petalStamp,-length*1.3,-width*1.8,length*2.6,width*3.6);
         ctx!.restore();
       }
     }

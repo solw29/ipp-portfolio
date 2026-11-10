@@ -11,6 +11,7 @@ export interface Project {
   summary: string; role: string; tags: string[]; outcome: string;
   context: string; responsibilities: string[]; flow: string[];
   results: string[]; limits: string[]; learning: string;
+  visuals?: {kind: 'screenshot' | 'chart' | 'diagram'; src: string; alt: string; caption: string; width: number; height: number}[];
   image?: {src: string; alt: string; caption: string};
   links?: {label: string; url: string}[];
 }
@@ -30,7 +31,7 @@ export const experience: Project = {
 };
 export const projects: Project[] = [
   {
-    slug: 'shopping-qa', number: '02', category: 'RESEARCH · RAG', title: '근거를 구분하는 쇼핑 QA', subtitle: '이커머스 상품정보 기반 신뢰성 인지 RAG',
+    slug: 'shopping-qa', number: '03', category: 'RESEARCH · RAG', title: '근거를 구분하는 쇼핑 QA', subtitle: '이커머스 상품정보 기반 신뢰성 인지 RAG',
     period: '2026.09 — 2026.11', team: '2인 연구형 캡스톤', status: '투고·포스터 발표 완료', ongoing: false,
     summary: '상품 설명과 리뷰가 상충하거나 근거가 부족할 때, 답변 방식을 조절하는 RAG를 연구했습니다.',
     role: '공동 라벨링 · 분류기 학습 · 비교 실험', tags: ['Python', 'PyTorch', 'Hugging Face Transformers', 'scikit-learn', 'OpenAI API'],
@@ -43,7 +44,7 @@ export const projects: Project[] = [
     learning: '전체 점수만 보는 대신 근거 상태 분류와 답변 생성 단계를 나누어 비교하면서, 다음 개선이 필요한 지점을 확인했습니다.',
   },
   {
-    slug: 'anomaly-detection', number: '03', category: 'RESEARCH · DEEP LEARNING', title: '결측 복원 과정의 이상 신호 보존 연구', subtitle: '딥러닝 제조 이상탐지 프로젝트',
+    slug: 'anomaly-detection', number: '02', category: 'RESEARCH · DEEP LEARNING', title: '결측 복원 과정의 이상 신호 보존 연구', subtitle: '딥러닝 제조 이상탐지 프로젝트',
     period: '2026.09 — 2026.11', team: '4인 팀 · 딥러닝 수업', status: 'PyTorch 개인 실험 3회 완료 · TensorFlow 팀 구현 검증 중', ongoing: true,
     summary: '제조 시계열의 결측값을 복원하면서 이상 탐지 신호를 보존하는 BRITS 기반 학습 방법을 연구했습니다. 개인 PyTorch 실험 3회에서 중첩률 50% 조건의 AUPRC를 Pair-control 대비 약 16.6% 높이고 MAE를 약 9.7% 줄였습니다. 팀 TensorFlow 구현과 데이터 파이프라인 통합·검증은 진행 중입니다.',
     role: '팀장 · 개인 예비실험 · 팀 코드 검토·평가', tags: ['Python', 'PyTorch', 'TensorFlow/Keras', 'Pandas', 'NumPy', 'BRITS'],
@@ -69,7 +70,7 @@ export const projects: Project[] = [
     learning: '모델 구현뿐 아니라 팀원이 전체 데이터 흐름을 이해하도록 설명하고, 역할과 제출 권한을 조율해 함께 결과물을 완성했습니다.',
   },
 ];
-export const allProjects = [experience, ...projects];
+export const allProjects = [experience, projects[1], projects[0], projects[2]];
 export const skillGroups = [
   {title: 'Web', subtitle: '웹 기능 구현', skills: ['TypeScript', 'Java', 'JSP']},
   {title: 'Data & AI', subtitle: '데이터 처리와 실험', skills: ['Python', 'PyTorch']},
