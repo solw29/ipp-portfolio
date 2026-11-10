@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.vite/
+index.html
+projects/
+*.local
+
+.vercel/
