@@ -1,6 +1,8 @@
 import { initCursor } from './cursor';
 import { profile } from './data';
 
+initCursor(); // Cursor must not depend on unrelated gallery/navigation initialization.
+
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const finePointer = matchMedia('(pointer: fine) and (hover: hover)');
 const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
@@ -148,4 +150,3 @@ copy?.addEventListener('click',async()=>{
  try{await navigator.clipboard.writeText(profile.email);if(feedback)feedback.textContent='이메일 주소를 복사했습니다.'}
  catch{if(feedback)feedback.textContent='자동 복사를 사용할 수 없습니다. 이메일 주소를 선택해 복사해 주세요.'}
 });
-initCursor();
