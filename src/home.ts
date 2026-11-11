@@ -1,4 +1,4 @@
-import {profile, contentSettings, allProjects, skillGroups, academicSkills, type Project, type Skill} from './data';
+import {profile, contentSettings, allProjects, skillGroups, type Project, type Skill} from './data';
 import {skillIcon} from './skill-icons';
 import {escapeHtml as e, tags, badge, arrow, contact} from './ui';
 
@@ -21,10 +21,14 @@ function about() {
  return `<section id="about" class="section about container"><div class="about-title"><span class="eyebrow">01 / ABOUT ME</span><h2>이해에서 구현으로,<br>구현에서 <span class="cyan">검증으로.</span></h2><p class="section-aside"><span aria-hidden="true">[</span> WEB IMPLEMENTATION / MODEL EXPERIMENTS <span aria-hidden="true">]</span></p></div><div class="about-body"><p class="about-lead">기능 구현부터 실험과 검증까지.</p><p>${profile.university}에서 <strong>데이터사이언스</strong>를 전공하고 <strong>컴퓨터학</strong>을 복수전공하고 있습니다. 웹 프로토타입 개발과 데이터·AI 프로젝트를 통해 기능 구현부터 실험과 검증까지 경험했습니다.</p><p>SCOPION에서는 웹 화면과 외부 API를 연결하고, 고지서 추출값을 사용자가 검토·수정·승인할 수 있는 흐름을 구현했습니다.</p><p>딥러닝 및 RAG 연구에서는 데이터 처리, 모델 학습, 비교 실험 코드를 작성하며 결과와 한계를 분석했습니다.</p><p>팀 프로젝트에서는 코드와 실험 흐름을 공유하고, 팀원들이 전체 구조를 이해할 수 있도록 협업했습니다.</p><div class="about-facts"><div><span class="eyebrow">FOCUS</span><span>SW개발 · 웹 기능 구현 · 데이터 처리</span></div><div><span class="eyebrow">CERTIFICATES</span><span>SQLD <small>2026.06</small> · ADsP <small>2025.09</small></span></div></div></div></section>`;
 }
 function skillCard(skill:Skill) {
- return `<li class="skill-card"><span class="skill-icon" aria-hidden="true">${skillIcon(skill.name)}</span><span class="skill-name">${e(skill.name)}</span><span class="skill-context">${e(skill.context)}</span></li>`;
+ return `<li class="skill-card"><span class="skill-icon" aria-hidden="true">${skillIcon(skill.name)}</span><span class="skill-name">${e(skill.name)}</span></li>`;
 }
 function skills() {
- return `<section id="skills" class="section skills container"><div class="section-heading"><div><span class="eyebrow">02 / TECH STACK</span><h2>Technologies<br><span class="text-outline">I Work With.</span></h2></div><p>프로젝트와 학습 과정에서 실제 사용한 기술을 중심으로 정리했습니다.<br>프로젝트 활용과 수업·학습 경험을 구분했습니다.</p></div><div class="experience-label"><span class="eyebrow">PROJECT EXPERIENCE</span><p>화면·API 연동, 데이터 처리, 모델 실험에서 활용한 기술</p></div><div class="tech-categories">${skillGroups.map((g,i)=>`<section class="tech-category" aria-labelledby="tech-group-${i}"><div class="tech-category-heading"><h3 id="tech-group-${i}">${e(g.title)}</h3><span>${e(g.subtitle)}</span></div><ul class="skill-grid">${g.skills.map(skillCard).join('')}</ul></section>`).join('')}</div><section class="academic-skills" aria-labelledby="academic-heading"><div class="experience-label"><h3 id="academic-heading" class="eyebrow">COURSEWORK / ACADEMIC EXPERIENCE</h3><p>수업과 SQLD 스터디에서 활용한 기술</p></div><ul class="skill-grid">${academicSkills.map(skillCard).join('')}</ul></section></section>`;
+ const category=(index:number)=>{
+  const g=skillGroups[index];
+  return `<section class="tech-category" aria-labelledby="tech-group-${index}"><div class="tech-category-heading"><h3 id="tech-group-${index}">${e(g.title)}</h3>${g.subtitle?`<p>${e(g.subtitle)}</p>`:''}</div><ul class="skill-grid">${g.skills.map(skillCard).join('')}</ul></section>`;
+ };
+ return `<section id="skills" class="section skills container"><div class="section-heading"><div><span class="eyebrow">02 / TECH STACK</span><h2>Tools &<br><span class="text-outline">Technologies.</span></h2></div><p>프로젝트와 학습 과정에서 사용한 기술을 분야별로 정리했습니다.</p></div><div class="tech-categories notion-tech-grid"><div class="tech-column">${category(0)}</div><div class="tech-column">${category(1)}</div><div class="tech-column">${category(2)}</div><div class="tech-column">${category(3)}${category(4)}</div></div></section>`;
 }
 function projectGallery(base:string) {
  const order=allProjects;

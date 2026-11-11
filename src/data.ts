@@ -76,20 +76,12 @@ export const projects: Project[] = [
   },
 ];
 export const allProjects = [experience, projects[1], projects[0], projects[2]];
-export interface Skill { name: string; context: string; }
+export interface Skill { name: string; }
+// Exact Notion inventory supplied by the user; no project proficiency is implied.
 export const skillGroups: {title:string; subtitle:string; skills:Skill[]}[] = [
-  {title:'Languages', subtitle:'기능 구현과 실험', skills:[
-    {name:'Python',context:'데이터 처리·모델 실험'}, {name:'TypeScript',context:'웹 프로토타입 구현'}]},
-  {title:'Web Development', subtitle:'SCOPION · 포트폴리오', skills:[
-    {name:'Vite',context:'프로젝트 구성·빌드'}, {name:'Tailwind CSS',context:'SCOPION 화면 구현'}, {name:'HTML/CSS',context:'포트폴리오 UI 구현'}]},
-  {title:'AI / Machine Learning', subtitle:'실험과 코드 검토', skills:[
-    {name:'PyTorch',context:'개인 실험·분류기 학습'}, {name:'TensorFlow/Keras',context:'팀 코드 검토·학습 점검'}]},
-  {title:'Data', subtitle:'제조 시계열 개인 실험', skills:[
-    {name:'Pandas',context:'데이터 처리'}, {name:'NumPy',context:'수치 데이터 처리'}]},
-  {title:'Development Tools', subtitle:'코드·진행 상황 공유', skills:[
-    {name:'Git',context:'버전 관리'}, {name:'GitHub',context:'코드·업무 공유'}, {name:'Notion',context:'실험·업무 기록'}]},
-];
-export const academicSkills:Skill[] = [
-  {name:'Java',context:'수업 활용'}, {name:'JSP',context:'수업 활용'},
-  {name:'SQL',context:'수업·SQLD 스터디'}, {name:'Oracle',context:'수업 활용'},
+  {title:'Languages',subtitle:'',skills:[{name:'Python'},{name:'C'},{name:'Java'},{name:'TypeScript'}]},
+  {title:'Web',subtitle:'',skills:[{name:'JSP'},{name:'Vite'},{name:'Tailwind CSS'}]},
+  {title:'DB',subtitle:'SQL 기반 데이터 조회 및 관리',skills:[{name:'Oracle'},{name:'MySQL'}]},
+  {title:'AI & Data',subtitle:'',skills:[{name:'PyTorch'},{name:'TensorFlow'},{name:'Hugging Face Transformers'}]},
+  {title:'Development Tools',subtitle:'',skills:[{name:'Linux'},{name:'Git'},{name:'GitHub'}]},
 ];

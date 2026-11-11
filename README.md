@@ -151,6 +151,11 @@ npx vercel deploy --prod
 
 ## 현재 콘텐츠 및 Skills 구성
 
-Hero/소개/프로젝트/타임라인/연락처 문구를 구현·실험·검증 경험 중심으로 정리했습니다. Skills는 **Project Experience 12개**와 **Coursework / Academic Experience 4개**로 구분합니다. 브랜드 아이콘은 로컬 `simple-icons` 패키지의 실제 SVG 경로를 정적 HTML에 포함합니다. 세부 선정 근거와 날짜 확인 상태, Before/After, 브라우저 증거는 [콘텐츠 개선 보고서](docs/content-refinement/README.md)에 정리했습니다.
+Hero/소개/프로젝트/타임라인/연락처 문구를 구현·실험·검증 경험 중심으로 정리했습니다. 현재 Skills는 원본 Notion에 맞춘 **5개 카테고리·15개 기술 카드**입니다. SQL은 DB 설명에만 표시하며 Oracle·MySQL은 독립 카드로 표시합니다. 브랜드 아이콘은 로컬 `simple-icons` 패키지의 실제 SVG 경로를 정적 HTML에 포함합니다. 세부 선정 근거와 날짜 확인 상태, Before/After, 브라우저 증거는 [콘텐츠 개선 보고서](docs/content-refinement/README.md)에 정리했습니다.
 
 `src/data.ts`의 `contentSettings.application.enabled`는 기본 false입니다. 기업 지원용으로 사용할 때 company·role의 공식 명칭을 확인하고 enabled를 true로 바꾸세요. program은 공식 명칭을 확인하기 전까지 null로 둡니다. `contentSettings.showPhone`을 false로 바꾸면 전화번호만 숨길 수 있습니다. 설정 변경 후 다시 빌드해야 정적 페이지에 반영됩니다.
+
+
+## 현재 Tech Stack — 원본 Notion 기준
+
+Languages(Python, C, Java, TypeScript), Web(JSP, Vite, Tailwind CSS), DB(Oracle, MySQL), AI & Data(PyTorch, TensorFlow, Hugging Face Transformers), Development Tools(Linux, Git, GitHub)로 구성합니다. Notion·SQL·Pandas·NumPy 등을 별도 핵심 기술 카드로 추가하지 않습니다. 프로젝트 상세의 실제 세부 기술은 유지했습니다. JSP만 별 아이콘을 사용하며 Java·Oracle은 로컬 Devicon SVG를 사용합니다. [목록·아이콘 출처·반응형 검증·화면과 영상](docs/notion-tech-stack/README.md)을 참고하세요. 이전 개선 보고서는 당시 구성에 대한 기록입니다.

@@ -58,3 +58,18 @@ html[data-theme=light] .syntax-value{color:#246876}
 @media(max-width:1023px){.tech-category:last-child .skill-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.profile-code{font-size:9px}.academic-skills .skill-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.tech-category-heading>span{font-size:10px}}
 @media(max-width:760px){.profile-code{font-size:clamp(8px,2.1vw,12px)}.profile-code>div{gap:10px}.experience-label{display:block}.experience-label p{font-size:11px;margin-top:9px}.tech-category-heading h3{font-size:16px}.tech-category-heading>span{font-size:9px;line-height:1.8}.tech-category-heading{gap:12px}.skill-context{font-size:9px}.academic-skills .skill-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:639px){.tech-category:last-child .skill-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tech-category:last-child{grid-column:auto}.tech-category .skill-card,.academic-skills .skill-card{min-height:142px}.tech-category-heading{align-items:start;flex-wrap:wrap}.hero-copy .hero-description{font-size:13px}}
+/* Exact Notion inventory: four fields side-by-side, Tools beneath AI & Data. */
+.tech-categories.notion-tech-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
+.notion-tech-grid .tech-column{min-width:0;display:flex;flex-direction:column;gap:32px}
+.notion-tech-grid .tech-category{grid-column:auto;min-width:0}
+.notion-tech-grid .tech-category-heading{display:block;min-height:66px;margin-bottom:18px}
+.notion-tech-grid .tech-category-heading h3{font-size:18px;line-height:1.6}
+.notion-tech-grid .tech-category-heading p{font-size:10px;line-height:1.8;margin-top:7px;color:var(--text-muted)}
+.notion-tech-grid .tech-category .skill-grid{grid-template-columns:minmax(0,1fr);gap:14px}
+.notion-tech-grid .tech-category .skill-card{height:126px;min-height:126px;padding:20px 12px;gap:14px}
+.notion-tech-grid .skill-name{font-size:13px;line-height:1.6;word-break:normal;overflow-wrap:normal;max-width:100%;text-wrap:balance}
+@media(min-width:1024px){.notion-tech-grid .tech-column:last-child .tech-category:last-child .tech-category-heading{min-height:0}}
+@media(min-width:640px) and (max-width:1023px){.tech-categories.notion-tech-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:34px 24px}.notion-tech-grid .tech-category .skill-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.notion-tech-grid .tech-category-heading{min-height:0}.notion-tech-grid .tech-category .skill-card{height:140px;min-height:140px}.notion-tech-grid .skill-name{font-size:12px}}
+@media(max-width:639px){.tech-categories.notion-tech-grid{grid-template-columns:minmax(0,1fr);gap:30px}.notion-tech-grid .tech-category .skill-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.notion-tech-grid .tech-category-heading{min-height:0;margin-bottom:18px}.notion-tech-grid .tech-column{gap:30px}.notion-tech-grid .tech-category .skill-card{height:140px;min-height:140px}.notion-tech-grid .skill-name{font-size:12px}}
+/* Oracle is a wide wordmark: crop empty SVG space without distorting the mark. */
+.notion-tech-grid .skill-icon svg[data-oracle]{width:64px;max-width:64px;height:32px;flex-shrink:0}
