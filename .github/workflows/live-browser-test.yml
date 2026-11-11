@@ -53,6 +53,7 @@ jobs:
             console.log(`## 실사이트 검증: ${r.status}\n\n대상: ${r.target}\n\n배포 커밋: ${r.actualRevision}\n`);
             for(const c of r.checks)console.log(`- ${c.status}: ${c.name}`);
             if(r.failure)console.log(`\n오류:\n\n\`\`\`\n${r.failure}\n\`\`\``);
+            if(r.failure)console.error('::error title=실사이트 브라우저 검증 실패::'+String(r.failure).replaceAll('%','%25').replaceAll('\r','%0D').replaceAll('\n','%0A').slice(0,3000));
             console.log('\n영상·화면·상세 결과는 이 실행의 Artifacts에서 받으세요.');
           } catch {console.log('테스트 실행 전에 실패했습니다. 작업 로그를 확인하세요.');}
           JS
