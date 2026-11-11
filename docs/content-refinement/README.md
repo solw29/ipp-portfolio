@@ -4,10 +4,10 @@ The existing Graphite Cyan layout, cursor and animation implementation were reta
 
 ## Changed files
 
-- `src/data.ts`: experience-led introduction; public/application and phone settings; clearer project names/roles; ongoing dates; curated project and academic skills.
+- `src/data.ts`: experience-led introduction; public/application settings; clearer project names/roles; ongoing dates; curated project and academic skills.
 - `src/home.ts`: Hero, About, Skills, project card order, selected-project headings, shorter timeline milestones. Uses existing card classes and filter attributes.
 - `src/skill-icons.ts`: build-time local Simple Icons SVG paths, plus consistent code/database fallbacks.
-- `src/ui.ts`: concise Contact copy and conditional phone block. Existing email/copy/GitHub/footer/source functionality retained.
+- `src/ui.ts`: concise Contact copy. Existing email/copy/GitHub/footer/source functionality retained.
 - `src/project-page.ts`: technical bilingual labels and clearer Korean section headings; original content and evidence stay in place.
 - `src/style.css`: uppercase display name, locally rendered icon alignment, context labels, project/academic grid layout and long-name wrapping. Existing pointer border/glow remains.
 - `package.json`, `package-lock.json`: Simple Icons package. SVGs are inlined at static build time, without a runtime CDN or icon library download.
@@ -44,16 +44,14 @@ The existing Graphite Cyan layout, cursor and animation implementation were reta
 
 Icons retain Simple Icons path geometry and use currentColor to fit the existing palette. HTML/CSS uses the HTML5 symbol; TensorFlow/Keras uses the TensorFlow symbol. Java, JSP, SQL and Oracle use matching generic code/database icons rather than inventing or labeling an unrelated brand mark. Their technology names are visible text. Simple Icons source/license: https://github.com/simple-icons/simple-icons (CC0 package).
 
-## Public/application and phone settings
+## Public/application settings
 
 `contentSettings` in `src/data.ts` controls:
 
 - `application.enabled`: false by default. Public pages omit the company line.
 - `application.company` and `role`: previous user-provided company/role. Verify the official recruiting role wording before using the application version.
 - `application.program`: null until the official program name is confirmed. No hard-coded “IPP 일학습병행” is emitted.
-- `showPhone`: true, retaining the earlier explicit public-contact request. Set false to remove the telephone link/block without removing email/GitHub.
 
-The static renderer was exercised in both modes. Application mode produces the company/role line, while a null program is omitted. Phone disabled removes the telephone link. These test changes were in memory only; public mode remains the committed default.
 
 ## Facts retained and remaining verification
 
@@ -63,7 +61,6 @@ The static renderer was exercised in both modes. Application mode produces the c
 | ACK 2026 presentation date | Original uploaded portfolio PDF explicitly says “포스터 발표 완료(11/6)” | Keep 2026.11.06. The poster confirms the research and results but is not independent proof of the event date; official event/presentation/submission dates remain to be confirmed. |
 | SCOPION | Earlier PDF says July–November, ongoing; current description says prototype development/validation underway | Use 2026.07 — Present rather than implying a confirmed completed end date. Actual completion date remains to be supplied. |
 | Manufacturing experiment | User ZIP README, CSVs and original description | Keep 3 completed seeds out of five planned, personal PyTorch vs team TensorFlow separation, AUPRC/MAE/Recall values and limitations. |
-| Phone | Earlier reply supplied the number in response to the public-contact question | Keep current explicit preference and make display configurable; no new permission is inferred from silence. |
 | Company/program | Previous user target-company statement; no official recruiting notice | Public mode hides it; program is null. Verify official wording before enabling application mode. |
 
 ## Executed checks
@@ -79,8 +76,10 @@ The static renderer was exercised in both modes. Application mode produces the c
 - Manufacturer result table still contains `0.5861 ± 0.0023`; original data JSON hash unchanged.
 - Zero page JavaScript errors. No live-site success claimed.
 
-[Hero](hero.png) · [Mobile Hero](hero-mobile.png) · [Full Skills](skills-full.png) · [Tablet](skills-tablet.png) · [Mobile Skills](skills-mobile.png) · [Project cards](projects.png) · [Detailed results](results.png) · [Actual interaction video](interactions.mp4)
+[Hero](hero.png) · [Mobile Hero](hero-mobile.png) · [Full Skills](skills-full.png) · [Tablet](skills-tablet.png) · [Mobile Skills](skills-mobile.png) · [Project cards](projects.png) · [Detailed results](results.png) · [Actual interaction video](https://github.com/solw29/ipp-portfolio/actions/workflows/live-browser-test.yml)
 
 ## Remaining limitation
 
 The public Vercel URL was tried with curl and Chromium. This environment still blocks it with CONNECT 403 / ERR_TUNNEL_CONNECTION_FAILED. Deployment SHA and production cursor behavior cannot be independently verified here. The screenshots and checks are from the local production build. Public verification requires allowing `ipp-portfolio-hazel.vercel.app` in this cloud environment's network settings.
+
+과거 브라우저 녹화는 공개 연락처 정책 변경에 따라 최신 실사이트 Actions 영상으로 대체했습니다. 원본 프로젝트 시연 자료는 유지합니다.

@@ -8,7 +8,8 @@
     "build": "tsc --noEmit && node scripts/generate.mjs && vite build",
     "preview": "vite preview --host 0.0.0.0",
     "check": "tsc --noEmit",
-    "test:live": "node scripts/test-live.mjs"
+    "test:live": "node scripts/test-live.mjs",
+    "check:public": "node scripts/check-public-content.mjs"
   },
   "devDependencies": {
     "playwright": "^1.65.0",

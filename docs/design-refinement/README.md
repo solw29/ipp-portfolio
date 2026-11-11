@@ -35,7 +35,7 @@ Performance investigation: the first multilayer implementation performed blur on
 - [Project hierarchy and Bento layout](after-projects.png)
 - [Tablet](tablet.png) · [Mobile](mobile.png)
 - [Layered trail](trail.png)
-- [Actual Chromium interaction recording](interactions.mp4)
+- [Actual Chromium interaction recording](https://github.com/solw29/ipp-portfolio/actions/workflows/live-browser-test.yml)
 
 ## Adding real visuals later
 
@@ -44,3 +44,5 @@ Set the optional `visuals` array on a project in `src/data.ts`. Each item has `k
 ## Limitations
 
 Validation is against the local production build. The public Vercel endpoint has been blocked by this cloud environment's outbound policy, so production deployment completion and live behavior are not claimed here. Original media and research results remain unchanged.
+
+과거 브라우저 녹화는 공개 연락처 정책 변경에 따라 최신 실사이트 Actions 영상으로 대체했습니다. 원본 프로젝트 시연 자료는 유지합니다.

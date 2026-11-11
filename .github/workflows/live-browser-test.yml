@@ -27,6 +27,8 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
+      - name: 타입·빌드 및 공개 연락처 검사
+        run: npm run build && npm run check:public
       - run: npx playwright install --with-deps chromium
       - name: 실제 Vercel 주소 검증 및 영상 기록
         run: npm run test:live

@@ -37,6 +37,8 @@ try {
   page.setDefaultTimeout(15000);
   const go = async path => {
     assert.equal((await page.goto(`${base}${path}`)).status(), 200);
+    assert.equal(await page.locator('a[href^="tel:"]').count(), 0, 'Telephone link must not be public');
+    assert(!/\b01[016789][ -]?\d{3,4}[ -]?\d{4}\b/.test(await page.locator('body').innerText()), 'Telephone value must not be public');
     assert.equal(await page.locator('meta[name=build-revision]').getAttribute('content'), report.actualRevision,
       'A new deployment replaced the target during this run');
   };
@@ -48,7 +50,7 @@ try {
   await go('/'); await page.waitForTimeout(1100);
   await check('Hero and exact 15 technology cards', async () => {
     assert((await page.locator('h1').innerText()).includes('CHUNG'));
-    assert.deepEqual(await page.locator('#skills .skill-name').allTextContents(), ['Python','C','Java','TypeScript','JSP','Vite','Tailwind CSS','Oracle','MySQL','PyTorch','TensorFlow','Hugging Face Transformers','Linux','Git','GitHub']);
+    assert.deepEqual(await page.locator('#skills .skill-name').allTextContents(), ['Python','C','Java','TypeScript','JSP','Vite','Tailwind CSS','Oracle Database','MySQL','PyTorch','TensorFlow','Hugging Face Transformers','Linux','Git','GitHub']);
     assert.equal(await page.locator('.project-card').count(), 4);
   });
   await check('Cursor on heading, description, navigation, skill and project', async () => {
@@ -70,6 +72,13 @@ try {
       assert.equal(await page.locator('.project-card:visible').count(), count);
     }
     assert.deepEqual(await page.locator('.card-number').allTextContents(), ['/01', '/02', '/03', '/04']);
+  });
+  await check('Contact: email/GitHub only, copy works, no telephone', async () => {
+    assert.equal(await page.locator('#contact .contact-row').count(), 2);
+    assert.equal(await page.locator('#contact .contact-row a[href^="mailto:"]').getAttribute('href'), 'mailto:minteugene59@gmail.com');
+    assert.equal(await page.locator('#contact a[href*="github.com/"]').getAttribute('href'), 'https://github.com/solw29');
+    await page.locator('.copy-email').click();
+    assert.equal(await page.evaluate(() => navigator.clipboard.readText()), 'minteugene59@gmail.com');
   });
   await check('Navigation and current section', async () => {
     await page.locator('#nav a[href="#skills"]').click(); await page.waitForTimeout(1000);
@@ -95,6 +104,10 @@ try {
       assert.equal(await page.locator('.detail-breadcrumb a').getAttribute('href'), '../../#projects');
       assert(await page.locator('meta[name=description]').getAttribute('content'));
       if (slug === 'anomaly-detection') assert((await page.locator('table').first().innerText()).includes('0.5861 ± 0.0023'));
+      for (const image of await page.locator('.visual-gallery img').all()) {
+        await image.scrollIntoViewIfNeeded();
+        assert(await image.evaluate(async el => { await el.decode(); return el.naturalWidth > 0; }));
+      }
       if (slug === 'scopion') {
         await page.waitForFunction(() => document.querySelector('video').readyState >= 1);
         assert(Math.abs(await page.locator('video').evaluate(v => v.duration) - 90.8) < 1);
@@ -108,8 +121,8 @@ try {
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     }
     await page.setViewportSize({ width: 390, height: 844 }); await go('/');
-    await page.locator('.menu-toggle').focus(); await page.keyboard.press('Enter'); await page.waitForTimeout(120);
-    assert(await page.locator('#nav a').first().evaluate(e => document.activeElement === e));
+    await page.locator('.menu-toggle').focus(); await page.keyboard.press('Enter');
+    await page.waitForFunction(() => document.activeElement === document.querySelector('#nav a'), null, { timeout: 5000 });
     await page.keyboard.press('Escape'); assert.equal(await page.locator('.menu-toggle').getAttribute('aria-expanded'), 'false');
     await page.screenshot({ path: `${output}/mobile.png` });
   });

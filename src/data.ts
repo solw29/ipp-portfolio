@@ -2,13 +2,12 @@ export const profile = {
   name: '정유진', englishName: 'Chung Yujin',
   university: '동덕여자대학교', major: '데이터사이언스 전공 · 컴퓨터학 복수전공',
   role: 'SW Development / Data & AI', email: 'minteugene59@gmail.com',
-  phone: '010-9461-3886', github: 'https://github.com/solw29',
-  introduction: '데이터사이언스와 컴퓨터학을 공부하며 웹 프로토타입 개발, API 연동, 데이터 처리와 AI 모델 비교 실험을 수행해 왔습니다.',
+  github: 'https://github.com/solw29',
+  introduction: '웹 화면과 외부 API를 연결하는 개발부터 데이터 처리·모델 실험까지, 직접 구현하고 검증한 경험을 쌓아왔습니다.',
 };
 // Public mode is the default. Set the official program name only after confirmation.
 export const contentSettings = {
   application: { enabled: false, company: '주식회사 누아', role: 'SW개발', program: null as string | null },
-  showPhone: true, // Previously explicitly provided for publication; can be disabled independently.
 };
 export interface Project {
   slug: string; number: string; category: string; title: string; subtitle: string;
@@ -49,9 +48,10 @@ export const projects: Project[] = [
     learning: '전체 점수만 보는 대신 근거 상태 분류와 답변 생성 단계를 나누어 비교하면서, 다음 개선이 필요한 지점을 확인했습니다.',
   },
   {
+    visuals: [{kind:'diagram',src:'../../media/brits-training-design.png',alt:'제공 도식의 학습 분기 요약: 공통 BRITS 체크포인트에서 Pair-control과 Proposed로 분기하고, 고정 TCN-A 기반 보존 손실은 Proposed에만 추가합니다.',caption:'제공된 BRITS·TCN-A 연구 도식의 학습 비교 부분을 Graphite Cyan으로 재구성한 설명 이미지입니다. 전체 파이프라인이나 팀 최종 성능을 나타내는 결과 화면이 아닙니다.',width:1672,height:941}],
     slug: 'anomaly-detection', number: '02', category: 'RESEARCH · DEEP LEARNING', title: '제조 시계열 이상탐지 연구', subtitle: '딥러닝 제조 이상탐지 프로젝트',
-    period: '2026.09 — 2026.11', team: '4인 팀 · 딥러닝 수업', status: 'PyTorch 개인 실험 3회 완료 · TensorFlow 팀 구현 검증 중', ongoing: true,
-    summary: '제조 시계열의 결측값을 복원하면서 이상 탐지 신호를 보존하는 BRITS 기반 학습 방법을 연구했습니다. 개인 PyTorch 실험 3회에서 중첩률 50% 조건의 AUPRC를 Pair-control 대비 약 16.6% 높이고 MAE를 약 9.7% 줄였습니다. 팀 TensorFlow 구현과 데이터 파이프라인 통합·검증은 진행 중입니다.',
+    period: '2026.09 — 2026.11', team: '4인 팀 · 딥러닝 수업', status: 'PyTorch 개인 실험 3개 시드 평가 완료 · TensorFlow 팀 구현 검증 중', ongoing: true,
+    summary: '제조 시계열의 결측값을 복원하면서 이상 탐지 신호를 보존하는 BRITS 기반 학습 방법을 연구했습니다. 개인 PyTorch 실험의 3개 시드 평가에서 중첩률 50% 조건의 AUPRC를 Pair-control 대비 약 16.6% 높이고 MAE를 약 9.7% 줄였습니다. 팀 TensorFlow 구현과 데이터 파이프라인 통합·검증은 진행 중입니다.',
     role: '연구 설계 · 개인 PyTorch 실험 · 팀 코드 검토', tags: ['Python', 'PyTorch', 'TensorFlow/Keras', 'Pandas', 'NumPy', 'BRITS'],
     outcome: '개인 PyTorch 3 seeds · Pair-control 대비 AUPRC 약 16.6% 상대 향상 (결측률 20%·중첩률 50%)',
     context: '다변량 제조 시계열의 결측값을 BRITS로 복원하는 과정에서 이상 탐지에 필요한 신호가 약화되는 문제를 다뤘습니다. 합성 이상 쌍과 탐지기 유도 보존 손실을 이용한 복원 방법을 연구하고, 팀장으로 가설과 비교 실험을 설계했습니다. 개인 PyTorch 실험과 팀 TensorFlow 구현은 별개의 코드와 결과로 관리했습니다.',
@@ -62,6 +62,10 @@ export const projects: Project[] = [
     learning: '생소한 연구를 함께 진행하기 위해 데이터 처리부터 평가까지 이어지는 예비실험을 만들고, 이를 바탕으로 팀원에게 전체 실험 흐름을 설명했습니다.',
   },
   {
+    visuals: [
+      {kind:'chart',src:'../../media/housing-city-comparison.png',alt:'팀 발표 자료의 도시별 XGBoost 성능 비교: RMSE, MAE, R2, MAPE의 Train·Validation·Test 막대그래프',caption:'기계학습 6조(수정본) 20쪽의 실제 비교 그래프 영역을 발췌했습니다. 팀 실험 자료이며 축·범례·수치를 다시 그리거나 변경하지 않았습니다.',width:1424,height:908},
+      {kind:'chart',src:'../../media/housing-seoul-shap.png',alt:'팀 발표 자료의 서울 SHAP 분석: LSTM-PCA·기존 매물·신규 피처의 기여도와 비율',caption:'같은 보고서 23쪽의 서울 SHAP 분석 영역입니다. 팀 자료의 결과 해석 예시이며 개인의 단독 분석 성과로 표현하지 않습니다.',width:1344,height:564},
+    ],
     slug: 'housing-price', number: '04', category: 'DATA · MACHINE LEARNING', title: '다세대주택 가격예측', subtitle: 'LSTM·XGBoost 앙상블과 SHAP 분석',
     period: '2026.03 — 2026.06', team: '5인 팀 · 기계학습 수업', status: '완료', ongoing: false,
     summary: '서울과 6개 광역시의 다세대주택 가격을 예측하고, 도시별 설정값을 비교하며 모델 결과를 분석했습니다.',

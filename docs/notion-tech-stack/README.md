@@ -51,6 +51,8 @@ The entire profile/project data prefix of `src/data.ts` was compared with the pr
 - Existing project filters, custom arrow and Reduced Motion checks passed; zero page JS errors.
 - Static section screenshots hide sticky header/cursor overlays only during export to avoid full-section screenshot stitching artifacts. The interaction video retains the real UI.
 
-[Desktop](desktop.png) · [Tablet](tablet.png) · [Mobile](mobile.png) · [Browser interaction video](interactions.mp4)
+[Desktop](desktop.png) · [Tablet](tablet.png) · [Mobile](mobile.png) · [Browser interaction video](https://github.com/solw29/ipp-portfolio/actions/workflows/live-browser-test.yml)
 
 These checks use the local production build. Live Vercel verification is not claimed; the cloud environment has previously blocked that hostname.
+
+과거 브라우저 녹화는 공개 연락처 정책 변경에 따라 최신 실사이트 Actions 영상으로 대체했습니다. 원본 프로젝트 시연 자료는 유지합니다.

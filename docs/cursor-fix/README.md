@@ -35,7 +35,7 @@ Production `npm run build` passed. Playwright checked actual SVG visibility and 
 12. Touch context: custom arrow disabled.
 13. No page JavaScript errors.
 
-[Trail screenshot](trail.png) · [Ripple screenshot](ripple.png) · [Chromium recording](chromium-test.mp4)
+[Trail screenshot](trail.png) · [Ripple screenshot](ripple.png) · [Chromium recording](https://github.com/solw29/ipp-portfolio/actions/workflows/live-browser-test.yml)
 
 ## Live deployment limitation
 
@@ -48,3 +48,5 @@ document.querySelector('meta[name="build-revision"]')?.content
 ```
 
 Compare it to the fix commit in GitHub and the Vercel deployment Source commit. To allow this agent to perform live verification, permit `ipp-portfolio-hazel.vercel.app` in the cloud environment's Internet settings.
+
+과거 브라우저 녹화는 공개 연락처 정책 변경에 따라 최신 실사이트 Actions 영상으로 대체했습니다. 원본 프로젝트 시연 자료는 유지합니다.
