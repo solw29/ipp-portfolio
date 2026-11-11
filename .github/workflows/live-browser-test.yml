@@ -1,0 +1,56 @@
+name: Vercel 실사이트 브라우저 검증
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/live-browser-test.yml'
+      - 'scripts/test-live.mjs'
+      - 'src/**'
+      - 'public/**'
+      - 'package*.json'
+      - 'vite.config.js'
+      - 'vercel.json'
+permissions:
+  contents: read
+concurrency:
+  group: production-browser-test
+  cancel-in-progress: true
+jobs:
+  chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: 실제 Vercel 주소 검증 및 영상 기록
+        run: npm run test:live
+        env:
+          TEST_BASE_URL: https://ipp-portfolio-hazel.vercel.app
+          EXPECTED_REVISION: ${{ github.sha }}
+      - name: 영상·화면·JSON 결과 보관 (실패 시에도 저장)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vercel-chromium-${{ github.sha }}
+          path: test-results/live/
+          retention-days: 14
+          if-no-files-found: warn
+      - name: 결과 요약
+        if: always()
+        run: |
+          node --input-type=module - <<'JS' >> "$GITHUB_STEP_SUMMARY"
+          import {readFileSync} from 'node:fs';
+          try {
+            const r=JSON.parse(readFileSync('test-results/live/report.json','utf8'));
+            console.log(`## 실사이트 검증: ${r.status}\n\n대상: ${r.target}\n\n배포 커밋: ${r.actualRevision}\n`);
+            for(const c of r.checks)console.log(`- ${c.status}: ${c.name}`);
+            if(r.failure)console.log(`\n오류:\n\n\`\`\`\n${r.failure}\n\`\`\``);
+            console.log('\n영상·화면·상세 결과는 이 실행의 Artifacts에서 받으세요.');
+          } catch {console.log('테스트 실행 전에 실패했습니다. 작업 로그를 확인하세요.');}
+          JS

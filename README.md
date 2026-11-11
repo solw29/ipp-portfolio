@@ -1,161 +1,152 @@
-# 정유진 · SW Developer Portfolio
+# Chung Yujin · 인터랙티브 개발자 포트폴리오
 
-Graphite Cyan 다크 테마를 기본으로 사용하는 반응형 정적 포트폴리오입니다. Vite + TypeScript로 구성하며 React, 백엔드, DB 없이 5개 페이지의 본문을 빌드 시 HTML로 생성합니다.
+[사이트 보기](https://ipp-portfolio-hazel.vercel.app/) · [실사이트 테스트](https://github.com/solw29/ipp-portfolio/actions/workflows/live-browser-test.yml) · [소스 코드](https://github.com/solw29/ipp-portfolio)
+
+개발 경험과 프로젝트의 담당 역할·구현 과정·검증 결과를 전달하기 위해 만든 **반응형 정적 프론트엔드 프로젝트**입니다. 단순한 이력서 나열 대신, 데이터 기반 콘텐츠 관리와 Canvas 인터랙션, 접근성을 함께 구현했습니다.
+
+Graphite Cyan 디자인을 바탕으로 TypeScript와 Vite를 사용합니다. 홈과 네 개의 상세 페이지를 빌드 시 HTML로 생성하고 Vercel에 배포하는 구조입니다.
+
+![포트폴리오 첫 화면](docs/content-refinement/hero.png)
+
+## 프로젝트에서 구현한 것
+
+| 영역 | 구현 내용 |
+|---|---|
+| 페이지 구성 | Hero, 소개, 기술 스택, 프로젝트 갤러리, 타임라인, 연락처와 상세 페이지 4개 |
+| 콘텐츠 구조 | 프로필·프로젝트·기술 목록을 데이터 파일로 분리하고 공통 렌더링 함수로 정적 페이지 생성 |
+| 커스텀 커서 | SVG 화살표, Catmull–Rom 경로를 따른 다층 꽃잎 트레일, 클릭 점에서 확장되는 리플 |
+| 카드 인터랙션 | 포인터 위치에 집중되는 Cyan 테두리와 외부 Glow, 크기 변화 없는 Hover와 아이콘 확대 |
+| 프로젝트 탐색 | 비대칭 Bento Grid, 분야별 필터, FLIP 재배치, 이전/다음 상세 페이지 이동 |
+| 스크롤·이동 | 한 번만 실행되는 순차 등장, 현재 섹션 표시, 지원 브라우저의 View Transitions |
+| 자료 표현 | 실제 시연 영상·발표 포스터·CSV 기반 차트·다운로드 링크, 대체 이미지 없이 자료가 있을 때만 표시 |
+| 반응형·접근성 | 모바일 메뉴, 키보드 포커스 이동, 본문 바로가기, 텍스트 대체 설명, Reduced Motion, 터치 환경 기본 커서 |
+| 검증 자동화 | Vercel 실주소에 접속하는 Chromium 테스트와 영상·화면·JSON 결과를 GitHub Actions에 보관 |
+
+사이트에서 소개하는 연구 프로젝트의 PyTorch·TensorFlow·RAG 실험과 **이 웹사이트를 구현한 기술은 구분**합니다. 웹사이트 자체에는 React, 서버 API, 데이터베이스, 로그인이나 CMS를 사용하지 않았습니다.
+
+## 사용 기술
+
+- **TypeScript**: 콘텐츠 타입, UI 이벤트와 커서 상태 관리
+- **Vite**: 개발 서버, SSR 모듈 로딩을 이용한 정적 HTML 생성 준비, 프로덕션 번들링
+- **HTML / CSS**: Grid·Flex 레이아웃, 반응형 화면, CSS 마스크를 이용한 테두리 강조, 테마와 전환 효과
+- **Canvas 2D / SVG**: 커서·그라데이션 트레일·클릭 리플·로컬 기술 아이콘
+- **Playwright / Chromium**: 실제 마우스·키보드·터치 입력과 페이지 이동 검증, 영상 기록
+- **Vercel / GitHub Actions**: 정적 사이트 배포 설정 및 실사이트 회귀 검사
+
+폰트는 Fontsource 패키지에서 번들링합니다. 기술 아이콘은 로컬 Simple Icons 패키지와 Devicon SVG를 사용합니다. 원본 Notion의 기술 목록은 5개 카테고리·15개 카드이며, 이는 프로젝트·학습 경험 목록입니다. JSP는 검증된 독립 로고를 확보하지 못해 별 아이콘으로 표시합니다.
+
+## 설계와 문제 해결
+
+### 정적 생성과 직접 접근 가능한 상세 주소
+
+`scripts/generate.mjs`가 TypeScript 렌더링 함수를 로드해 홈과 각 프로젝트의 `index.html`을 작성하고, Vite가 이를 여러 진입점으로 빌드합니다. 본문과 페이지별 메타데이터가 초기 HTML에 포함됩니다. 상세 주소로 직접 들어가거나 새로고침해도 SPA 재작성 없이 해당 페이지를 제공합니다.
+
+### 커서 상태를 콘텐츠와 분리
+
+일반 제목·본문 위로 이동하거나 스크롤할 때 커서를 전체 초기화하던 문제를 수정했습니다. 현재는 화살표 표시 상태와 Canvas 잔상 정리를 분리합니다. 실제 마우스 사용과 복합 입력 장치를 고려하며, 입력·편집·텍스트 선택·터치·Reduced Motion에서는 기본 커서를 유지합니다.
+
+### 트레일 성능 최적화
+
+최근 좌표는 최대 48개만 보관하고 Canvas DPR은 1.5로 제한합니다. 여러 겹의 꽃잎과 blur·그라데이션을 오프스크린 Canvas에 한 번 계산한 뒤 재사용합니다. 프레임마다 DOM이나 그라데이션을 새로 만들지 않으며, 잔상과 리플이 사라지면 애니메이션 루프도 중단합니다.
+
+### 콘텐츠 정확성과 유지보수
+
+개인 실험과 팀 구현, 완료한 결과와 진행 중인 작업을 구분합니다. 실제 실험 값은 데이터 파일과 원본 CSV를 근거로 표시하며, 제공되지 않은 화면·실적·이미지는 만들지 않습니다. 기업 지원 문구와 전화번호 공개는 콘텐츠 설정으로 제어합니다.
 
 ## 실행
 
-Node.js 22.12 이상 또는 24 LTS 환경에서:
+Node.js 22.12 이상 또는 24 LTS를 사용합니다.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-다른 터미널에서 검증·프로덕션 실행:
+프로덕션 빌드와 로컬 확인:
 
 ```sh
+npm run check
 npm run build
 npm run preview
 ```
 
-`dist/` 전체를 정적 호스팅에 업로드합니다. `/projects/scopion/`, `/projects/shopping-qa/`, `/projects/anomaly-detection/`, `/projects/housing-price/`마다 `index.html`이 있어 SPA 재작성 없이 상세 주소로 직접 접근할 수 있습니다. 폴더의 index.html을 제공하는 정적 호스트를 사용하세요.
+`dist/`가 배포 결과물입니다. `vercel.json`에 Vite 빌드, 출력 폴더와 상세 페이지 URL 설정이 있습니다. 데이터·렌더링 함수 수정 후에는 개발 서버를 재시작하거나 다시 빌드해 정적 HTML을 갱신합니다.
 
-GitHub Pages처럼 하위 경로에 배포할 경우:
+## 실사이트 테스트와 영상 확인
+
+**GitHub → Actions → “Vercel 실사이트 브라우저 검증”**에서 실행을 선택합니다. 완료된 실행의 **Artifacts → `vercel-chromium-커밋SHA`**에서 다음 자료를 받습니다.
+
+- `report.json`: 실제 테스트 URL, 기대/실제 배포 커밋, 검사 결과와 오류
+- `videos/*.webm`: Chromium의 실제 동작 영상
+- `desktop.png`, `mobile.png`: 테스트 화면
+
+테스트는 성공 여부와 관계없이 가능한 결과를 업로드합니다. 설치나 네트워크 단계에서 실패하면 영상이 없을 수 있으며, 이 경우 작업 로그와 JSON에 기록된 오류를 확인합니다. 산출물은 14일 보관됩니다.
+
+자동 실행은 관련 소스가 `main`에 푸시될 때 시작합니다. Actions에서 **Run workflow**로 수동 실행할 수도 있습니다. 테스트는 Vercel의 `build-revision`이 해당 GitHub 커밋과 일치할 때까지 최대 약 6분 기다립니다. 이전 배포를 최신 코드의 테스트로 보고하지 않으며, 배포 불일치는 실패로 표시합니다.
+
+검사 범위:
+
+- 홈의 프로젝트·기술 카드 수, 프로젝트 번호와 대표 실험 수치
+- 제목·본문·내비게이션·카드·상세 페이지에서 커서 표시
+- 빠른/느린 트레일, 정지 후 소멸, 클릭 리플, 스크롤 후 표시 유지
+- Hover 크기 유지와 Cyan 강조, 프로젝트 필터·현재 섹션 내비게이션
+- 상세 페이지 4개 직접 접근, 실제 시연 영상과 포스터 응답
+- 반응형 가로 넘침, 모바일 메뉴의 키보드 동작, 터치·Reduced Motion
+- 브라우저 예외, 콘솔 오류와 사이트 자원의 HTTP 오류
+
+같은 테스트를 로컬 프로덕션 빌드에 실행하려면 `npm run preview`를 켠 상태에서:
 
 ```sh
-PORTFOLIO_BASE=/ipp-portfolio/ npm run build
+npx playwright install chromium
+TEST_BASE_URL=http://localhost:4173 npm run test:live
 ```
 
-배포는 자동 실행하지 않습니다. 도메인 확정 전에는 임의의 canonical URL이나 배포 링크를 넣지 않았습니다.
+다른 Chromium 실행 파일을 사용할 경우 `CHROMIUM_PATH`를 설정할 수 있습니다. 결과는 기본 `test-results/live/`에 저장되며 Git에는 포함하지 않습니다.
+
+> 로컬 빌드 검증과 Vercel 실사이트 검증은 별개입니다. 이 개발 클라우드에서는 Vercel 주소가 네트워크 정책으로 차단되므로 직접 실사이트 성공을 단정하지 않습니다. 실제 배포 결과는 위 Actions 실행의 상태·배포 SHA·영상을 기준으로 확인합니다.
+
+## 폴더 구조
+
+```text
+src/
+  data.ts                 프로필·프로젝트·기술 목록 및 공개 설정
+  home.ts                 홈 섹션과 프로젝트 카드
+  ui.ts                   공통 UI·연락처·커서 마크업
+  project-page.ts         프로젝트 상세와 이전/다음 탐색
+  evidence.ts             실제 영상·포스터·차트·자료 갤러리
+  render.ts               문서·메타데이터·페이지 조합
+  main.ts                 메뉴·필터·스크롤·테마 인터랙션
+  cursor.ts               마우스 상태·트레일·리플
+  skill-icons.ts, icons/  로컬 기술 아이콘과 출처 라이선스
+  style.css               Graphite Cyan 스타일과 반응형 화면
+scripts/
+  generate.mjs            빌드용 정적 HTML 생성
+  test-live.mjs           실사이트 Chromium 검증 및 기록
+  verify-results.py       제공된 CSV 요약 검증
+  prepare-results.py      실험 결과 JSON 갱신
+  plot-results.py         CSV 기반 그래프 생성
+public/                   실제 시연 영상·포스터·실험 자료
+.github/workflows/        실사이트 테스트 자동화
+```
 
 ## 콘텐츠 수정
 
-- `src/data.ts`: 프로필, 프로젝트별 역할·진행 상태·검증 결과·한계, 기술 분류
-- `src/render.ts`: 홈과 상세 페이지의 컴포넌트 함수 및 페이지별 메타데이터
-- `src/style.css`: 반응형 스타일, 키보드 포커스, 인쇄, 동작 줄이기 설정
-- `src/main.ts`: 모바일 메뉴, 현재 섹션 표시, 테마 선택
-- `src/cursor.ts`: SVG 화살표, Catmull–Rom 경로의 Canvas 꽃잎 트레일, 클릭 리플
-- `src/evidence.ts`: 실제 포스터·영상과 개인 실험 결과 표/다운로드 렌더링
-- `scripts/generate.mjs`: HTML 정적 생성
+`src/data.ts`에서 프로필·프로젝트·기술 목록을 수정합니다.
 
-개발 서버 실행 중 data/render를 바꾼 경우 서버를 재시작해 정적 HTML을 다시 생성하세요. CSS·브라우저 스크립트는 Vite가 즉시 갱신합니다. 생성된 `index.html` 및 `projects/`는 Git에서 제외되며 빌드 때 다시 만듭니다.
+- `contentSettings.application.enabled`: 기업 지원 문구 표시. 기본은 공개용 비표시입니다.
+- `application.company / role / program`: 실제 공식 명칭 확인 후 입력합니다. 미확인 프로그램명은 null로 둡니다.
+- `contentSettings.showPhone`: 전화번호 공개 여부.
+- 프로젝트의 `visuals`: 실제 차트·다이어그램·스크린샷 경로, alt, 설명과 크기를 추가합니다. 자료가 없으면 빈 UI를 만들지 않습니다.
 
-## 이미지·실제 링크 추가
+실험 CSV를 갱신해야 할 경우 `verify-results.py` → `prepare-results.py` → `plot-results.py` 순으로 실행한 후 다시 빌드합니다. 일반 웹 빌드는 Python 없이 실행되며, 그래프 재생성에만 Matplotlib이 필요합니다.
 
-ACK 포스터와 SCOPION 시연 영상은 제공받은 실제 자료입니다. 제공되지 않은 복원 예시나 PR 화면은 만들지 않았습니다. 실제 파일을 `public/images/`에 저장하고 프로젝트의 선택적 `image` 필드를 추가하면 상세 페이지에 나타납니다. 하위 경로 배포에도 연결되도록 `src`는 `../../images/파일명.webp` 형식을 사용합니다.
+## 검증 기록
 
-```ts
-image: {
-  src: '../../images/scopion.webp',
-  alt: '실제 화면에 대한 설명',
-  caption: '화면의 기능과 검증 맥락'
-},
-links: [{ label: '프로젝트 GitHub', url: '실제 공개 URL' }]
-```
+다음 기록은 해당 시점의 **로컬 프로덕션 빌드**를 검증한 자료입니다. 최신 실사이트 검증 여부는 Actions에서 확인합니다.
 
-`links`는 실제 링크가 있는 경우에만 추가합니다. 이력서와 블로그 메뉴는 자료가 준비되기 전까지 표시하지 않습니다. 제공받은 GitHub·이름·전화번호 및 최종 확인된 Gmail 주소를 반영했습니다. 영문 이름은 사용자 최종 지정인 Chung Yujin을 사용합니다. 제공된 원본 포스터는 변경하지 않았습니다. 전화번호는 공개 페이지에 노출되므로 공개 범위를 바꾸려면 `src/data.ts`의 연락처 및 표시 여부를 수정하세요.
+- [커서 표시 문제 재현과 수정](docs/cursor-fix/README.md)
+- [카드 Glow·꽃잎 트레일 최적화와 동작 영상](docs/design-refinement/README.md)
+- [콘텐츠 및 Skills 근거 정리](docs/content-refinement/README.md)
+- [원본 Notion 기준 15개 기술·반응형 화면과 영상](docs/notion-tech-stack/README.md)
 
-## 자료와 확인 사항
-
-사용자 요청 및 첨부한 노션 내보내기 PDF를 사실 근거로 사용했습니다. 노션 URL과 참고 사이트는 작업 당시 네트워크 정책에 의해 403으로 차단되어 원본 웹 화면은 확인하지 못했습니다.
-
-추가로 받으면 좋은 자료:
-
-- 각 프로젝트의 실제 화면·포스터·결과 도표와 공개 가능한 설명
-- 각 프로젝트의 GitHub 또는 데모 URL
-- 이메일은 `minteugene59@gmail.com`으로 확인·수정 완료
-- 노션 공개 공유 주소 또는 최신 HTML 내보내기
-- 선택 사항: 이력서 PDF, 프로필 사진, 실제 블로그 URL, 영문 이름의 선호 표기
-- 최종 배포 호스트·도메인
-
-진행 중인 연구 결과와 완료한 결과를 분리했으며, 개인 PyTorch 예비실험을 팀 TensorFlow 결과에 합치지 않았습니다. MySQL·Linux는 구체적인 사용 근거 확인 전 핵심 기술 목록에 포함하지 않았습니다.
-
-## 현재 검증 결과
-
-- `npm run build`: TypeScript 검사 및 5개 페이지 정적 빌드 통과
-- Chromium/Playwright: 홈과 상세 4개 직접 접속, 메타데이터와 내부 링크 검사 통과
-- 320·390·768·1024·1440px 화면에서 가로 넘침 없음
-- 모바일 메뉴 열기·이동 후 닫기, 동작 줄이기 설정 검사 통과
-- 브라우저 콘솔 및 페이지 오류 0건
-- JavaScript를 꺼도 상세 본문 표시 확인
-- 외부 GitHub·이메일·전화 링크는 제공받은 주소로 연결하며, 실제 메일 수신·전화 연결 여부는 검사하지 않았습니다.
-
-
-## 커서와 테마
-
-기본은 Graphite Cyan 다크 테마이며, 상단 테마 버튼으로 밝은 테마를 선택할 수 있습니다. 선택은 localStorage에 보관하고 저장소가 차단된 환경에서도 기본 테마는 동작합니다.
-
-커서는 off-white 내부·Cyan 외곽선의 30×38px SVG 화살표 하나입니다. SVG의 (3, 2) 끝점과 실제 포인터 좌표를 맞추며 hover 확대도 그 끝점을 중심으로 합니다. 상시 링이나 Spotlight는 없습니다. Canvas에는 최근 최대 48개 좌표만 유지하고 Catmull–Rom spline 위에 폭과 길이가 다른 그라데이션 타원형 꽃잎을 겹칩니다. 트레일 수명은 580ms, 클릭 점/리플은 430ms이며 흔적이 사라지면 requestAnimationFrame을 중단합니다. Canvas DPR은 최대 1.5로 제한했습니다.
-
-fine pointer + hover + 마우스 환경에서만 활성화하며 reduced-motion 변경도 실시간으로 반영합니다. 텍스트 본문, 입력·편집 영역, 선택된 텍스트와 영상의 네이티브 컨트롤에서는 기본 커서로 복귀합니다. 선택 영역은 지속해서 유지되고 이벤트 기본 동작을 막지 않습니다. blur·스크롤·탭 비활성화·포인터 이탈 때 흔적을 지웁니다. 프레임마다 DOM을 추가하지 않습니다. 커서 자체 구현은 이번 디자인 개편에서 변경하지 않았습니다.
-
-## 실제 자료와 개인 실험 재현
-
-- `public/results/anomaly/`: 원본 CSV 4개, 제공 ZIP, 원본 README, 독립 SVG/PNG 결과 그래프
-- `src/experiment-results.json`: CSV에서 생성한 빌드용 데이터(브라우저에서 CSV 파싱 불필요)
-- `public/media/scopion-demo.mp4`: 사용자 제공 시연, autoplay 없음, metadata만 사전 로드
-- `public/media/capstone-poster.png`, `public/documents/ack-2026-poster.pdf`: 실제 ACK 포스터와 원본 PDF
-
-CSV 업데이트 후에는 다음을 실행합니다. 검증·데이터 변환은 Python 표준 라이브러리만 사용하며 그래프 재생성에만 Matplotlib이 필요합니다. 일반 웹 빌드에는 Python이 필요하지 않습니다.
-
-```sh
-python scripts/verify-results.py
-python scripts/prepare-results.py
-python scripts/plot-results.py
-npm run build
-```
-
-합성 이상은 kind=all의 시드별 값으로 평균과 표본 SD를 확인합니다. TEP는 `fault=mean` 요약 행을 제외한 20개 fault를 시드별 평균하고 3개 시드 간 표본 SD를 계산합니다. 모든 표시값은 제공 CSV에서 파생합니다. 결측률 20%와 calibration 명목 FPR 1% 조건은 사용자 설명·원본 README를 근거로 표기했습니다.
-
-계획한 5개 시드 중 3개(11·22·33) 결과이며 팀 TensorFlow 성능을 포함하지 않습니다. 업무 분배 PDF는 계획 자료이므로 예정 업무를 완료했다고 표시하거나 다른 팀원의 역할을 본인의 성과로 추가하지 않았습니다. 복원 예시의 원신호·결측 위치·복원 시계열 및 실제 PR 검토 화면은 아직 제공되지 않아 표시하지 않습니다.
-
-## 이번 변경의 브라우저 검증
-
-Chromium/Playwright에서 SVG 화살표·Canvas 리플/트레일, 프레임별 DOM 수 유지, 유휴 시 RAF 중단, 텍스트·textarea 기본 커서, 실행 중 reduced-motion 변경, 터치 비활성화, 테마 저장을 검사했습니다. 320/390/768/1024/1440px에서 홈·결과 상세·시연 페이지의 가로 넘침이 없으며, 4개 상세 페이지와 실제 PDF·영상·CSV/ZIP 링크가 정상 응답합니다. SCOPION 영상 메타데이터(90.8초), 표시 수치, 모바일 메뉴도 확인했고 브라우저 오류는 0건입니다. `python scripts/verify-results.py`도 통과했습니다.
-
-
-## Editorial 디자인 개편
-
-- `src/ui.ts`: 헤더·푸터·연락처·공통 배지·기존 커서 마크업
-- `src/home.ts`: 이름 중심 Hero, 코드 형식 프로필 패널, 소개·기술·Bento 갤러리·타임라인
-- `src/project-page.ts`: 실제 역할·검증 범위를 유지한 상세 페이지, 목차와 이전/다음 이동
-- `src/render.ts`: 정적 문서 및 메타데이터 구성
-- `src/main.ts`: 메뉴·현재 섹션·필터 FLIP 애니메이션·포인터 반응 테두리·한 번만 나타나는 스크롤 Reveal·복사 피드백
-
-Space Grotesk와 JetBrains Mono는 npm 패키지에서 직접 번들링하므로 외부 폰트 CDN을 호출하지 않습니다. 본문은 Pretendard/Noto Sans KR/시스템 폰트 폴백을 사용합니다. 선택한 테마는 `portfolio-theme-editorial` 키에 저장하며 이전 밝은 기본 테마 설정과 분리했습니다.
-
-프로젝트 필터는 실제 콘텐츠가 있는 All / AI·ML / Data / Web만 제공합니다. Backend·Deployment 숙련도나 GitHub 활동 수치를 만들어 넣지 않았고, 이력서 파일이 없어 Resume 버튼도 표시하지 않았습니다. 각 자료는 실제 시연·포스터·실험 그래프이며 주택 프로젝트는 구현 방법을 표현한 다이어그램입니다.
-
-Reveal은 IntersectionObserver로 한 번만 실행하고 빠른 스크롤 및 키보드 포커스 이동에도 콘텐츠를 표시합니다. JS 비활성화 시 모든 정적 콘텐츠가 보이며, 비활성 필터 버튼은 표시하지 않습니다. reduced-motion에서는 Reveal·FLIP·페이지 전환 효과를 생략합니다. 페이지 이동은 지원 브라우저의 CSS View Transitions를 사용하며 나머지 브라우저에서는 일반 문서 이동을 유지합니다.
-
-개편 검증: 프로덕션 빌드, 5개 페이지 × 320/390/640/768/1024/1440px, 4개 필터, 실제 자료 링크, 이메일 복사, 테마 저장, Scroll Spy, 모바일 메뉴·Escape·키보드 첫 링크/본문 포커스, reduced-motion, JS 없는 정적 본문을 확인했습니다. 콘솔 오류와 페이지 가로 넘침은 없었습니다. 로컬 모바일 Lighthouse 측정은 성능·접근성·권장사항·SEO 각 100점입니다(실제 배포 환경의 점수를 보장하는 수치는 아닙니다). `src/cursor.ts` 해시를 비교해 기존 커서 구현이 유지됨을 확인했습니다.
-
-## Vercel 배포
-
-영문 이름은 Chung Yujin, 로고는 CY.로 수정했습니다. `vercel.json`에 Vite 빌드 명령, `dist` 출력 폴더와 상세 페이지 URL 옵션을 설정했습니다.
-
-Vercel 계정으로 인증한 로컬 터미널에서 이 프로젝트 폴더를 연 뒤 실행합니다.
-
-```sh
-npm ci
-npx vercel login
-npx vercel deploy --prod
-```
-
-현재 클라우드에서 배포를 시도했으나 Vercel API/사이트 접속이 네트워크 정책의 CONNECT 403으로 차단됐습니다. 기존 Vercel 인증은 없고, CLI 임시 배포도 이 시도에서는 제공되지 않았습니다. 사용자가 제공한 배포 대상 주소는 https://ipp-portfolio-hazel.vercel.app/ 이며, 이 클라우드에서는 접근 차단으로 실제 배포 상태를 직접 검증하지 못했습니다. 이 환경에서 재개하려면 인터넷 허용 목록에 `api.vercel.com`, `vercel.com`, `auth.vercel.com`을 추가하고, 이후 생성되는 사이트를 검증하기 위한 `*.vercel.app` 접근을 허용해야 합니다. 인증 정보는 채팅에 적지 말고 Vercel 로그인 또는 환경 설정의 안전한 자격 증명 기능을 사용하세요.
-
-## 카드·기술 그리드·트레일 개선
-
-카테고리별 개별 기술 카드, 테두리 마스크를 이용한 포인터 강조, 캐시된 다층 꽃잎 트레일, 갤러리와 일치하는 번호/상세 탐색 순서, View Source를 적용했습니다. 상세의 선택적 `visuals` 배열에 실제 이미지·차트·다이어그램을 연결할 수 있습니다. 자료가 없으면 빈 카드나 임의 이미지는 생성하지 않습니다. 자세한 변경 파일·실제 Chromium 검사·전후 화면·영상은 [검증 보고서](docs/design-refinement/README.md)를 확인하세요.
-
-
-## 현재 콘텐츠 및 Skills 구성
-
-Hero/소개/프로젝트/타임라인/연락처 문구를 구현·실험·검증 경험 중심으로 정리했습니다. 현재 Skills는 원본 Notion에 맞춘 **5개 카테고리·15개 기술 카드**입니다. SQL은 DB 설명에만 표시하며 Oracle·MySQL은 독립 카드로 표시합니다. 브랜드 아이콘은 로컬 `simple-icons` 패키지의 실제 SVG 경로를 정적 HTML에 포함합니다. 세부 선정 근거와 날짜 확인 상태, Before/After, 브라우저 증거는 [콘텐츠 개선 보고서](docs/content-refinement/README.md)에 정리했습니다.
-
-`src/data.ts`의 `contentSettings.application.enabled`는 기본 false입니다. 기업 지원용으로 사용할 때 company·role의 공식 명칭을 확인하고 enabled를 true로 바꾸세요. program은 공식 명칭을 확인하기 전까지 null로 둡니다. `contentSettings.showPhone`을 false로 바꾸면 전화번호만 숨길 수 있습니다. 설정 변경 후 다시 빌드해야 정적 페이지에 반영됩니다.
-
-
-## 현재 Tech Stack — 원본 Notion 기준
-
-Languages(Python, C, Java, TypeScript), Web(JSP, Vite, Tailwind CSS), DB(Oracle, MySQL), AI & Data(PyTorch, TensorFlow, Hugging Face Transformers), Development Tools(Linux, Git, GitHub)로 구성합니다. Notion·SQL·Pandas·NumPy 등을 별도 핵심 기술 카드로 추가하지 않습니다. 프로젝트 상세의 실제 세부 기술은 유지했습니다. JSP만 별 아이콘을 사용하며 Java·Oracle은 로컬 Devicon SVG를 사용합니다. [목록·아이콘 출처·반응형 검증·화면과 영상](docs/notion-tech-stack/README.md)을 참고하세요. 이전 개선 보고서는 당시 구성에 대한 기록입니다.
+현재 웹사이트를 하나의 프론트엔드 구현 사례로 소개하기 위한 README이며, 사이트에 소개된 팀 프로젝트의 성과를 이 웹사이트 자체의 성과로 합산하지 않습니다.
