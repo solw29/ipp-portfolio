@@ -1,4 +1,4 @@
-import type { Project } from './data';
+import {allProjects, type Project} from './data';
 import {escapeHtml as e} from './ui';
 import results from './experiment-results.json';
 
@@ -14,6 +14,11 @@ export function experimentEvidence(base: string) {
 }
 
 export function projectMedia(slug: string, base: string) {
+ const project=allProjects.find(p=>p.slug===slug);
+ if(project?.demo){
+  const d=project.demo;
+  return `<section class="project-media" id="media" aria-label="${e(project.title)} 시연 영상"><div><span class="eyebrow">ACTUAL DEMO / LOCAL RECORDING</span><h2>실제 대시보드 시연</h2><p>${e(d.description)}</p></div><figure><video controls playsinline preload="metadata" ${d.poster?`poster="${e(d.poster)}"`:''} aria-label="${e(project.title)} 저장소 제공 무음 시연 영상"><source src="${e(d.src)}" type="video/mp4">아래 링크에서 영상 파일을 내려받을 수 있습니다.</video><figcaption>${e(d.caption)}</figcaption></figure><a class="text-link" href="${e(d.src)}" download>Demo Video 내려받기 ↓</a></section>`;
+ }
  if (slug==='scopion') return `<section class="project-media" id="media" aria-label="SCOPION 시연 영상"><div><span class="eyebrow">PROTOTYPE WALKTHROUGH</span><h2>실제 프로토타입 시연</h2><p>업로드·추출값 검토·관리자 승인·양식 출력 흐름을 담은 제공 영상입니다. 영상의 시연 값은 실제 운영 성과를 뜻하지 않습니다.</p></div><figure><video controls playsinline preload="metadata" poster="${base}media/scopion-demo-poster.jpg" aria-label="SCOPION 웹 프로토타입 화면 시연, 음성 없는 영상"><source src="${base}media/scopion-demo.mp4" type="video/mp4">브라우저에서 재생할 수 없으면 아래 영상 파일을 내려받아 주세요.</video><figcaption>SCOPION · 사용자 제공 시연 영상 · 1분 31초 · 음성 없음</figcaption></figure><details class="video-description"><summary>영상에서 다루는 흐름을 글로 보기</summary><p>자료 업로드 → OCR 추출값 확인 → 검토·수정 → 관리자 승인 → 배출량 산정 → 원청 양식 출력. 고지서 추출값과 공통 스키마를 화면으로 연결한 프로토타입을 시연합니다. 실제 전기 고지서 2건·합성 가스 고지서 검증 범위와 남은 작업은 아래 본문에 구분했습니다.</p></details><a class="text-link" href="${base}media/scopion-demo.mp4" download>시연 영상 내려받기 ↓</a></section>`;
  if (slug==='shopping-qa') return `<section class="project-media poster-media" id="media" aria-label="ACK 2026 발표 포스터"><div><span class="eyebrow">ACK 2026 · RESEARCH POSTER</span><h2>발표한 연구를 한 장에</h2><p>상충·불충분한 상품정보를 다룬 신뢰성 인지 RAG 연구의 실제 발표 포스터입니다.</p></div><figure><a href="${base}documents/ack-2026-poster.pdf" target="_blank" rel="noopener noreferrer"><img src="${base}media/capstone-poster.png" alt="ACK 2026 포스터: 데이터셋 구축, 신뢰성 인지 RAG 파이프라인, AI Judge 예비 평가와 Oracle 분석. 분류 정확도가 주요 병목이며 사람 평가는 후속 과제입니다." loading="lazy"></a><figcaption>사용자 제공 ACK 2026 포스터 · 선택하면 원본 PDF가 열립니다.</figcaption></figure><a class="text-link" href="${base}documents/ack-2026-poster.pdf" download>발표 포스터 PDF ↓</a></section>`;
  return '';

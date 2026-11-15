@@ -1,0 +1,66 @@
+{
+  "target": "http://localhost:4173",
+  "expectedRevision": null,
+  "actualRevision": "ea965c08e2c4c71980ca9d1e880efbb80a29e4eb",
+  "sourceRevision": "ea965c08e2c4c71980ca9d1e880efbb80a29e4eb",
+  "sourceDirty": true,
+  "startedAt": "2026-11-15T18:11:45.576Z",
+  "checks": [
+    {
+      "name": "Hero and exact 15 technology cards",
+      "status": "passed"
+    },
+    {
+      "name": "Cursor on heading, description, navigation, skill and project",
+      "status": "passed"
+    },
+    {
+      "name": "Border glow and no hover size shift",
+      "status": "passed"
+    },
+    {
+      "name": "Project filters and data",
+      "status": "passed"
+    },
+    {
+      "name": "Contact: email/GitHub only, copy works, no telephone",
+      "status": "passed"
+    },
+    {
+      "name": "Navigation and current section",
+      "status": "passed"
+    },
+    {
+      "name": "Fast/slow petal trail, ripple and idle fade",
+      "status": "passed"
+    },
+    {
+      "name": "Stationary cursor survives scroll",
+      "status": "passed"
+    },
+    {
+      "name": "All six direct/reloaded detail routes, navigation, evidence and media",
+      "status": "passed"
+    },
+    {
+      "name": "Internal navigation, download and evidence file paths",
+      "status": "passed"
+    },
+    {
+      "name": "Responsive layouts and mobile keyboard navigation",
+      "status": "passed"
+    },
+    {
+      "name": "Reduced Motion and touch fallback",
+      "status": "passed"
+    },
+    {
+      "name": "No page/console/asset errors",
+      "status": "passed"
+    }
+  ],
+  "errors": [],
+  "status": "passed",
+  "internalLinksChecked": 18,
+  "finishedAt": "2026-11-15T18:12:11.627Z"
+}

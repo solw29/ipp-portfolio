@@ -1,0 +1,32 @@
+[
+  {
+    "url": "https://github.com/solw29/teamsync-ai",
+    "http": "200",
+    "exit": 0,
+    "error": ""
+  },
+  {
+    "url": "https://github.com/solw29/adhd-planner",
+    "http": "200",
+    "exit": 0,
+    "error": ""
+  },
+  {
+    "url": "https://github.com/solw29/teamsync-ai/blob/079fbc66f0118630d40b6d36d17af27ffc001808/1107_D6/live-report.md",
+    "http": "200",
+    "exit": 0,
+    "error": ""
+  },
+  {
+    "url": "https://github.com/solw29/teamsync-ai/blob/079fbc66f0118630d40b6d36d17af27ffc001808/docs/react-test-report.md",
+    "http": "200",
+    "exit": 0,
+    "error": ""
+  },
+  {
+    "url": "https://adhd-planner-five.vercel.app/",
+    "http": "000",
+    "exit": 56,
+    "error": "curl: (56) CONNECT tunnel failed, response 403"
+  }
+]

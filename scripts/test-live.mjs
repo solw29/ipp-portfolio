@@ -1,12 +1,25 @@
 import { chromium } from 'playwright';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
+import { createServer } from 'vite';
+import { execFileSync } from 'node:child_process';
+
+const source = await createServer({configFile:false,server:{middlewareMode:true},appType:'custom',optimizeDeps:{noDiscovery:true,include:[]}});
+let projects, filters;
+try {
+  const data=await source.ssrLoadModule('/src/data.ts');
+  projects=data.allProjects; filters=data.projectFilters;
+} finally { await source.close(); }
+const requiredOrder=['teamsync-ai','adhd-planner','scopion','shopping-qa','anomaly-detection','housing-price'];
+assert.deepEqual(projects.map(p=>p.slug),requiredOrder,'Six projects must follow the requested order');
 
 const base = (process.env.TEST_BASE_URL || 'https://ipp-portfolio-hazel.vercel.app').replace(/\/$/, '');
 const expected = process.env.EXPECTED_REVISION || '';
 const output = process.env.TEST_OUTPUT_DIR || 'test-results/live';
 await mkdir(output, { recursive: true });
 const report = { target: base, expectedRevision: expected || null, actualRevision: null,
+  sourceRevision:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),
+  sourceDirty:!!execFileSync('git',['status','--porcelain'],{encoding:'utf8'}).trim(),
   startedAt: new Date().toISOString(), checks: [], errors: [], status: 'running' };
 let browser;
 const check = async (name, action) => {
@@ -35,12 +48,22 @@ try {
   page.on('console', m => { if (m.type() === 'error') report.errors.push(m.text()); });
   page.on('response', r => { if (r.url().startsWith(base) && r.status() >= 400) report.errors.push(`HTTP ${r.status()}: ${r.url()}`); });
   page.setDefaultTimeout(15000);
+  const localLinks=new Set();
   const go = async path => {
     assert.equal((await page.goto(`${base}${path}`)).status(), 200);
     assert.equal(await page.locator('a[href^="tel:"]').count(), 0, 'Telephone link must not be public');
     assert(!/\b01[016789][ -]?\d{3,4}[ -]?\d{4}\b/.test(await page.locator('body').innerText()), 'Telephone value must not be public');
     assert.equal(await page.locator('meta[name=build-revision]').getAttribute('content'), report.actualRevision,
       'A new deployment replaced the target during this run');
+    for(const href of await page.locator('a[href]').evaluateAll(nodes=>nodes.map(a=>a.href))){
+      const url=new URL(href);
+      assert(!['file:','sediment:'].includes(url.protocol),'Local file URI must not be public');
+      assert(!url.pathname.startsWith('/workspace/')&&!url.pathname.startsWith('/tmp/'),'Workspace path must not be public');
+      if(url.origin===new URL(base).origin){url.hash='';localLinks.add(url.href);}
+    }
+    for(const href of await page.locator('a[href^="#"]').evaluateAll(nodes=>nodes.map(a=>a.getAttribute('href')))){
+      assert(await page.locator(`[id="${href.slice(1)}"]`).count(),`Missing fragment ${href} on ${path}`);
+    }
   };
   const visible = async () => { await page.waitForTimeout(40); assert(await page.locator('#custom-cursor').isVisible()); };
   const pixels = () => page.evaluate(() => {
@@ -51,7 +74,21 @@ try {
   await check('Hero and exact 15 technology cards', async () => {
     assert((await page.locator('h1').innerText()).includes('CHUNG'));
     assert.deepEqual(await page.locator('#skills .skill-name').allTextContents(), ['Python','C','Java','TypeScript','JSP','Vite','Tailwind CSS','Oracle Database','MySQL','PyTorch','TensorFlow','Hugging Face Transformers','Linux','Git','GitHub']);
-    assert.equal(await page.locator('.project-card').count(), 4);
+    assert.equal(await page.locator('.project-card').count(), projects.length);
+    assert.deepEqual(await page.locator('.project-card').evaluateAll(cards=>cards.map(c=>c.dataset.project)),requiredOrder);
+    assert.equal(await page.locator('.tech-category').count(),5);
+    assert((await page.locator('.education-note').innerText()).includes('2027학년도 1학기부터 이수 예정'));
+    assert.equal(await page.locator('.hero-target').count(),0);
+    for(const p of projects){
+      const card=page.locator(`[data-project="${p.slug}"]`);
+      const expectedTags=p.cardTags || p.tags.slice(0,6);
+      assert(expectedTags.length>=4 && expectedTags.length<=6);
+      assert.deepEqual(await card.locator('.tags span').allTextContents(),expectedTags);
+      await card.scrollIntoViewIfNeeded();
+      for(const image of await card.locator('img').all())assert(await image.evaluate(async el=>{await el.decode();return el.naturalWidth>0;}));
+    }
+    assert.equal(await page.locator('.card-adhd-planner img').count(),0,'Planner uses a labelled flow, never another project screenshot');
+    assert.equal(await page.locator('.card-teamsync-ai img').getAttribute('src'),'./media/teamsync-dashboard.png');
   });
   await check('Cursor on heading, description, navigation, skill and project', async () => {
     await page.mouse.move(700, 180); await visible();
@@ -67,11 +104,13 @@ try {
     assert((await tile.evaluate(e => getComputedStyle(e).boxShadow)).includes('50, 230, 255'));
   });
   await check('Project filters and data', async () => {
-    for (const [key, count] of [['web', 1], ['ai', 3], ['data', 3], ['all', 4]]) {
+    for (const {key} of [...filters.filter(f=>f.key!=='all'),filters.find(f=>f.key==='all')]) {
+      const count=key==='all'?projects.length:projects.filter(p=>p.filters.includes(key)).length;
+      assert.equal(await page.locator(`[data-filter=${key}] span`).innerText(),String(count).padStart(2,'0'));
       await page.locator(`[data-filter=${key}]`).click(); await page.waitForTimeout(400);
       assert.equal(await page.locator('.project-card:visible').count(), count);
     }
-    assert.deepEqual(await page.locator('.card-number').allTextContents(), ['/01', '/02', '/03', '/04']);
+    assert.deepEqual(await page.locator('.card-number').allTextContents(), projects.map(p=>`/${p.number}`));
   });
   await check('Contact: email/GitHub only, copy works, no telephone', async () => {
     assert.equal(await page.locator('#contact .contact-row').count(), 2);
@@ -88,40 +127,91 @@ try {
   await check('Fast/slow petal trail, ripple and idle fade', async () => {
     for (const step of [12, 2]) {
       for (let i = 0; i < 28; i++) { await page.mouse.move(650 + i * step, 180 + 45 * Math.sin(i / 6)); await page.waitForTimeout(12); }
-      assert(await pixels()); await page.waitForTimeout(750); assert.equal(await pixels(), false); await visible();
+      assert(await pixels()); await page.screenshot({path:`${output}/trail-step-${step}.png`}); await page.waitForTimeout(750); assert.equal(await pixels(), false); await visible();
     }
     await page.mouse.down(); await page.waitForTimeout(60); assert(await pixels());
-    await page.mouse.up(); await page.waitForTimeout(650); assert.equal(await pixels(), false);
+    await page.screenshot({path:`${output}/click-ripple.png`}); await page.mouse.up(); await page.waitForTimeout(650); assert.equal(await pixels(), false);
   });
   await check('Stationary cursor survives scroll', async () => {
     await page.mouse.move(720, 180); await visible(); await page.mouse.wheel(0, 180);
     await page.waitForTimeout(200); await visible();
   });
   await page.screenshot({ path: `${output}/desktop.png` });
-  await check('All four direct detail routes, data and actual media', async () => {
-    for (const slug of ['scopion', 'anomaly-detection', 'shopping-qa', 'housing-price']) {
+  await check('All six direct/reloaded detail routes, navigation, evidence and media', async () => {
+    for (const [index,p] of projects.entries()) {
+      const slug=p.slug;
       await go(`/projects/${slug}/`); await page.locator('h1').hover(); await visible();
       assert.equal(await page.locator('.detail-breadcrumb a').getAttribute('href'), '../../#projects');
-      assert(await page.locator('meta[name=description]').getAttribute('content'));
+      assert.equal(await page.title(),`${p.title} | 정유진 포트폴리오`);
+      assert.equal(await page.locator('meta[name=description]').getAttribute('content'),p.summary);
+      assert((await page.locator('.detail-breadcrumb').innerText()).includes(p.number));
+      assert.equal(await page.locator('.project-pagination a').first().getAttribute('href'),`../../projects/${projects[(index-1+projects.length)%projects.length].slug}/`);
+      assert.equal(await page.locator('.project-pagination a').last().getAttribute('href'),`../../projects/${projects[(index+1)%projects.length].slug}/`);
+      const reload=await page.reload();assert.equal(reload.status(),200);await page.locator('h1').hover();await visible();
+      for(const link of await page.locator('.project-links a').all()){
+        assert.equal(await link.getAttribute('target'),'_blank');
+        assert((await link.getAttribute('rel')).includes('noopener'));
+        assert((await link.getAttribute('rel')).includes('noreferrer'));
+      }
+      if(slug==='teamsync-ai'){
+        assert((await page.locator('#results').innerText()).includes('3/6쌍'));
+        assert((await page.locator('#results').innerText()).includes('오탐 2건'));
+        assert((await page.locator('#limitations').innerText()).includes('합성 사례'));
+        assert((await page.locator('#limitations').innerText()).includes('JSON Import'));
+        assert.equal(await page.locator('.project-links a').count(),4);
+      }
+      if(slug==='adhd-planner'){
+        assert((await page.locator('#role').innerText()).includes('Vanilla JavaScript'));
+        assert(!((await page.locator('.detail-hero .tags').innerText()).includes('React')));
+        assert.equal(await page.getByRole('link',{name:'View GitHub'}).getAttribute('href'),'https://github.com/solw29/adhd-planner');
+        assert.equal(await page.getByRole('link',{name:'Live Demo'}).getAttribute('href'),'https://adhd-planner-five.vercel.app/');
+        assert((await page.locator('.engineering-notes').innerText()).includes('expectedRevision'));
+        assert((await page.locator('.engineering-notes').innerText()).includes('409'));
+        assert.equal(await page.locator('.project-links a').count(),2);
+      }
       if (slug === 'anomaly-detection') assert((await page.locator('table').first().innerText()).includes('0.5861 ± 0.0023'));
       for (const image of await page.locator('.visual-gallery img').all()) {
         await image.scrollIntoViewIfNeeded();
         assert(await image.evaluate(async el => { await el.decode(); return el.naturalWidth > 0; }));
       }
-      if (slug === 'scopion') {
+      if (slug === 'scopion' || slug === 'teamsync-ai') {
         await page.waitForFunction(() => document.querySelector('video').readyState >= 1);
-        assert(Math.abs(await page.locator('video').evaluate(v => v.duration) - 90.8) < 1);
+        const duration=await page.locator('video').evaluate(v=>v.duration);assert(duration>0);
+        if(slug==='scopion')assert(Math.abs(duration-90.8)<1);
+        await page.locator('video').evaluate(v=>v.play());
+        await page.waitForFunction(()=>document.querySelector('video').currentTime>0.1);
+        await page.locator('video').evaluate(v=>v.pause());
       }
       if (slug === 'shopping-qa') assert.equal((await page.request.get(`${base}/documents/ack-2026-poster.pdf`)).status(), 200);
     }
+  });
+  await check('Internal navigation, download and evidence file paths',async()=>{
+    for(const url of localLinks){
+      const response=await page.request.head(url);assert.equal(response.status(),200,`Broken local link ${url}`);
+      const type=response.headers()['content-type'] || '';
+      if(/\.(zip|pdf|mp4|csv|svg)$/.test(new URL(url).pathname))assert(!type.includes('text/html'),`HTML fallback for evidence file ${url}`);
+    }
+    report.internalLinksChecked=localLinks.size;
   });
   await check('Responsive layouts and mobile keyboard navigation', async () => {
     for (const width of [320, 390, 768, 1440]) {
       await page.setViewportSize({ width, height: 900 }); await go('/');
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+      assert.equal(await page.locator('.project-card').count(),projects.length);
+      for(const p of projects){
+        const card=page.locator(`[data-project="${p.slug}"]`);await card.scrollIntoViewIfNeeded();
+        assert(await card.isVisible());
+        assert(await card.evaluate(el=>el.scrollWidth<=el.clientWidth));
+      }
+      await page.screenshot({path:`${output}/projects-${width}.png`});
+      for(const p of projects){
+        await go(`/projects/${p.slug}/`);
+        assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`${width}px detail overflow: ${p.slug}`);
+      }
     }
     await page.setViewportSize({ width: 390, height: 844 }); await go('/');
-    await page.locator('.menu-toggle').focus(); await page.keyboard.press('Enter');
+    await page.locator('.menu-toggle').focus();
+    assert.equal(await page.locator('.menu-toggle').evaluate(el=>getComputedStyle(el).outlineStyle),'solid'); await page.keyboard.press('Enter');
     await page.waitForFunction(() => document.activeElement === document.querySelector('#nav a'), null, { timeout: 5000 });
     await page.keyboard.press('Escape'); assert.equal(await page.locator('.menu-toggle').getAttribute('aria-expanded'), 'false');
     await page.screenshot({ path: `${output}/mobile.png` });
@@ -132,6 +222,16 @@ try {
     const mobile = await browser.newContext({ isMobile: true, hasTouch: true, viewport: { width: 390, height: 844 } });
     const m = await mobile.newPage(); assert.equal((await m.goto(base)).status(), 200);
     await m.touchscreen.tap(220, 180); assert.equal(await m.locator('#custom-cursor').isVisible(), false); await mobile.close();
+  });
+  if(process.env.TEST_EXTERNAL_LINKS==='1')await check('External GitHub evidence and Planner live URL',async()=>{
+    report.externalLinks=[];
+    const urls=[...new Set(projects.flatMap(p=>(p.links||[]).map(l=>l.url)).filter(url=>url.startsWith('https://')))];
+    for(const url of urls){
+      const response=await page.request.get(url,{timeout:30000});
+      report.externalLinks.push({url,status:response.status()});
+      assert.equal(response.status(),200,`External evidence unavailable: ${url}`);
+      if(url==='https://adhd-planner-five.vercel.app/')assert((await response.text()).includes("Let's Go"),'Planner must return the actual app');
+    }
   });
   await check('No page/console/asset errors', async () => assert.deepEqual(report.errors, []));
   await context.close();

@@ -1,4 +1,4 @@
-import {allProjects} from './data';
+import {allProjects,profile} from './data';
 import {header,footer,cursorMarkup,escapeHtml as e} from './ui';
 import {home} from './home';
 import {detail} from './project-page';
@@ -7,7 +7,7 @@ export function renderPage(slug?:string) {
  const project=allProjects.find(p=>p.slug===slug);
  const base=project?'../../':'./';
  const title=project?`${project.title} | 정유진 포트폴리오`:'정유진 | SW Developer Portfolio';
- const description=project?project.summary:'동덕여자대학교 데이터사이언스 전공·컴퓨터학 복수전공 정유진의 SW개발 포트폴리오. 웹 프로토타입과 데이터·AI 프로젝트의 구현, 실험, 검증 과정을 소개합니다.';
+ const description=project?project.summary:`${profile.university} ${profile.major}. 정유진의 SW개발 포트폴리오: 웹서비스·API·DB·AI 자동화와 데이터 연구의 구현·검증 과정을 소개합니다.`;
  return `<!doctype html>
 <html lang="ko" data-theme="dark">
 <head>

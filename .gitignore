@@ -8,3 +8,7 @@ projects/
 .vercel/
 
 test-results/
+
+# Keep local review recordings out of Git; production runs retain Actions artifacts.
+docs/p0-revision/local-chromium.mp4
+docs/p0-revision/mobile-chromium.mp4
