@@ -178,6 +178,7 @@ try {
         await page.waitForFunction(() => document.querySelector('video').readyState >= 1);
         const duration=await page.locator('video').evaluate(v=>v.duration);assert(duration>0);
         if(slug==='scopion')assert(Math.abs(duration-90.8)<1);
+        if(slug==='teamsync-ai')assert(Math.abs(duration-105)<1,'TeamSync must serve the updated 1:45 video');
         await page.locator('video').evaluate(v=>v.play());
         await page.waitForFunction(()=>document.querySelector('video').currentTime>0.1);
         await page.locator('video').evaluate(v=>v.pause());

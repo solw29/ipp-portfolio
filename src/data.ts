@@ -128,11 +128,11 @@ export const teamsync: Project = {
   ],
   learning:'리뷰 지적, 게시 위치 유효성, 생성 테스트의 버그 검출을 별개로 평가했습니다. 같은 테스트 초안을 두 버전에 실행해 비교 대상을 고정하고, 잘못된 기대값과 오탐을 개선 과제로 분리했습니다.',
   visuals:[{kind:'screenshot',src:'../../media/teamsync-dashboard.png',alt:'실제 TeamSync React 대시보드의 익명화된 평가 데이터: 12개 PR 목록, 상태·검색·평가 메뉴',caption:'TeamSync 저장소의 실제 Chromium 캡처입니다. 익명화된 합성 사례 평가를 탐색하는 로컬 대시보드이며 외부 배포 화면이 아닙니다. FAILED는 검사 상태를 함께 반영하며 분석 성공 여부와 구분합니다.',width:1440,height:1681}],
-  demo:{src:'../../media/teamsync-react-demo.mp4',caption:'TeamSync 저장소의 실제 자동 시연 영상 · 로컬 대시보드 · 음성 없음',description:'JSON Import 기반 React 대시보드에서 실제 평가 데이터를 검색·필터하고 PR 상세와 Evaluation을 탐색하는 저장소 제공 영상입니다. 실시간 API 연결이나 외부 배포 시연이 아닙니다.'},
+  demo:{src:'../../media/teamsync-react-demo.mp4?v=7225fc4f',caption:'TeamSync 저장소 제공 시연 영상 · 1분 45초 · 음성 없음',description:'실제 GitHub PR의 분석 댓글·생성 테스트 실행 상태와 평가 결과, React 대시보드를 함께 살펴보는 저장소 제공 영상입니다. 실시간 API·DB 자동 연동이나 외부 대시보드 배포를 뜻하지 않습니다.'},
   links:[
     {label:'View GitHub',url:'https://github.com/solw29/teamsync-ai'},
     {label:'Evaluation Report',url:'https://github.com/solw29/teamsync-ai/blob/079fbc66f0118630d40b6d36d17af27ffc001808/1107_D6/live-report.md'},
-    {label:'Demo Video',url:'/media/teamsync-react-demo.mp4'},
+    {label:'Demo Video',url:'/media/teamsync-react-demo.mp4?v=7225fc4f'},
     {label:'Validation Report',url:'https://github.com/solw29/teamsync-ai/blob/079fbc66f0118630d40b6d36d17af27ffc001808/docs/react-test-report.md'},
   ],
 };
