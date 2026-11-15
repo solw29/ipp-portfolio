@@ -211,8 +211,12 @@ try {
       }
     }
     await page.setViewportSize({ width: 390, height: 844 }); await go('/');
-    await page.locator('.menu-toggle').focus();
-    assert.equal(await page.locator('.menu-toggle').evaluate(el=>getComputedStyle(el).outlineStyle),'solid'); await page.keyboard.press('Enter');
+    await page.waitForFunction(()=>document.querySelector('.project-filters')?.hidden===false);
+    const menu=page.locator('.menu-toggle');
+    await menu.focus();
+    assert.equal(await menu.evaluate(el=>getComputedStyle(el).outlineStyle),'solid');
+    await menu.press('Enter');
+    await page.waitForFunction(()=>document.querySelector('.menu-toggle')?.getAttribute('aria-expanded')==='true');
     await page.waitForFunction(() => document.activeElement === document.querySelector('#nav a'), null, { timeout: 5000 });
     await page.keyboard.press('Escape'); assert.equal(await page.locator('.menu-toggle').getAttribute('aria-expanded'), 'false');
     await page.screenshot({ path: `${output}/mobile.png` });
