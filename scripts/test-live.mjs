@@ -232,9 +232,20 @@ try {
     report.externalLinks=[];
     const urls=[...new Set(projects.flatMap(p=>(p.links||[]).map(l=>l.url)).filter(url=>url.startsWith('https://')))];
     for(const url of urls){
-      const response=await page.request.get(url,{timeout:30000});
-      report.externalLinks.push({url,status:response.status()});
-      assert.equal(response.status(),200,`External evidence unavailable: ${url}`);
+      let response=await page.request.get(url,{timeout:30000});
+      if(response.status()===429){await pause(5000);response=await page.request.get(url,{timeout:30000});}
+      const result={url,status:response.status()};report.externalLinks.push(result);
+      // GitHub can rate-limit shared hosted runners. Verify the exact public source
+      // only for 429; preserve the original status instead of claiming HTTP 200.
+      if(response.status()===429 && url.startsWith('https://github.com/')){
+        const parts=new URL(url).pathname.split('/').filter(Boolean);
+        const rawPath=parts[2]==='blob'?parts.slice(3).join('/'):'HEAD/README.md';
+        result.sourceUrl=`https://raw.githubusercontent.com/${parts[0]}/${parts[1]}/${rawPath}`;
+        const source=await page.request.get(result.sourceUrl,{timeout:30000});
+        result.sourceStatus=source.status();
+        assert.equal(source.status(),200,`Rate-limited evidence source unavailable: ${url}`);
+        console.log(`GitHub HTTP 429 recorded; exact source verified: ${result.sourceUrl}`);
+      }else assert.equal(response.status(),200,`External evidence unavailable: ${url}`);
       if(url==='https://adhd-planner-five.vercel.app/')assert((await response.text()).includes("Let's Go"),'Planner must return the actual app');
     }
   });
