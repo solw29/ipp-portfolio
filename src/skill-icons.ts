@@ -1,7 +1,7 @@
-import {siPython,siC,siTypescript,siVite,siTailwindcss,siPytorch,siTensorflow,siHuggingface,siMysql,siLinux,siGit,siGithub,type SimpleIcon} from 'simple-icons';
+import {siPython,siC,siTypescript,siVite,siTailwindcss,siPytorch,siTensorflow,siHuggingface,siMysql,siLinux,siGit,siGithub,siJavascript,siReact,siNodedotjs,siPostgresql,siSqlite,siHtml5,type SimpleIcon} from 'simple-icons';
 import javaSvg from './icons/java.svg?raw';
 import oracleSvg from './icons/oracle.svg?raw';
-const icons:Record<string,SimpleIcon>={Python:siPython,C:siC,TypeScript:siTypescript,Vite:siVite,'Tailwind CSS':siTailwindcss,PyTorch:siPytorch,TensorFlow:siTensorflow,'Hugging Face Transformers':siHuggingface,MySQL:siMysql,Linux:siLinux,Git:siGit,GitHub:siGithub};
+const icons:Record<string,SimpleIcon>={Python:siPython,C:siC,TypeScript:siTypescript,Vite:siVite,'Tailwind CSS':siTailwindcss,PyTorch:siPytorch,TensorFlow:siTensorflow,'Hugging Face Transformers':siHuggingface,MySQL:siMysql,Linux:siLinux,Git:siGit,GitHub:siGithub,JavaScript:siJavascript,React:siReact,'Node.js':siNodedotjs,PostgreSQL:siPostgresql,SQLite:siSqlite,'HTML/CSS':siHtml5};
 export function skillIcon(name:string) {
  const icon=icons[name];
  if(icon)return `<svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor" focusable="false" data-icon-source="simple-icons"><path d="${icon.path}"/></svg>`;
