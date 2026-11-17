@@ -3,7 +3,7 @@ export const profile = {
   university: '동덕여자대학교', major: '데이터사이언스 전공 · 컴퓨터학 복수전공 승인 (2027학년도 1학기부터 이수 예정)',
   role: 'SW Development / Data & AI', email: 'minteugene59@gmail.com',
   github: 'https://github.com/solw29',
-  introduction: '웹서비스의 화면·API·DB를 구현하고, AI 자동화와 데이터·모델 실험으로 동작과 결과를 검증해 왔습니다.',
+  introduction: '웹 화면·API·DB를 직접 구현하고, AI의 결과를 테스트와 실험 지표로 검증하며 사용자가 확인할 수 있는 흐름으로 연결해 왔습니다.',
 };
 // Company-neutral public defaults; optional application copy must be explicitly configured.
 export const contentSettings = {
@@ -18,6 +18,7 @@ export interface Project {
   slug: string; number?: string; category: string; filters: ProjectCategory[]; title: string; subtitle: string;
   cardTags?: string[];
   engineering?: string[];
+  caseStudies?: {title: string; problem: string; solution: string; result: string}[];
   demo?: {src: string; poster?: string; caption: string; description: string};
   period: string; team: string; status: string; ongoing: boolean;
   summary: string; role: string; tags: string[]; outcome: string;
@@ -38,6 +39,9 @@ export const experience: Project = {
   context: '20개 선발 팀 중 하나로 참여했습니다. 팀은 자동차부품 중소기업의 배출량 관리 흐름을 다루며, 저는 웹 화면과 외부 API 연동을 담당했습니다.',
   responsibilities: ['TypeScript·Vite·Tailwind CSS 기반 웹 프로토타입 구현', 'OCR API로 고지서 값을 추출하고 팀 공통 데이터 스키마에 맞춰 화면과 연결', 'Claude Sonnet API를 이용해 고지서 값과 과거 기록을 설명하는 챗봇형 에이전트 구현', '추출값 검토·수정, 관리자 승인, 배출량 산정, 원청 양식 출력 흐름 연결'],
   flow: ['자료 업로드', 'OCR 값 추출', '검토·수정', '관리자 승인', '배출량 산정', '원청 양식 출력'],
+  caseStudies: [
+    {title:'OCR 추출값의 검증과 최종 확정 분리',problem:'고지서 OCR 결과를 그대로 계산에 사용하면 오인식된 값이 후속 산정으로 전달될 수 있습니다.',solution:'추출값을 공통 스키마에 연결하고 사용자가 검토·수정한 후 관리자가 승인하는 흐름을 웹 화면으로 구성했습니다. Claude 설명 에이전트는 계산 확정 권한과 분리했습니다.',result:'실제 전기 고지서 2건·합성 가스 고지서 1건에서 입력 및 검증 규칙을 확인했습니다. 실제 운영 정확도는 아직 검증 전입니다.'},
+  ],
   results: ['실제 전기 고지서 2건과 합성 가스 고지서로 검증 규칙 확인', '추출 결과를 공통 데이터 스키마에 맞춰 검토 화면으로 연결', '배출계수의 출처 확인 전까지 시연에서는 데모 값으로 명시'],
   limits: ['운영 중인 완성 서비스가 아닌 개발 중인 프로토타입입니다.', '실제 가스 고지서 검증은 진행 중입니다.', '과거 시계열 기록을 활용한 설명 기능을 보강하고 있습니다.'],
   learning: 'API 응답을 보여주는 것에서 끝내지 않고, 사용자가 추출값을 확인하고 수정한 뒤 승인할 수 있도록 데이터와 화면의 흐름을 연결했습니다.',
@@ -112,6 +116,11 @@ export const teamsync: Project = {
     'JSON Import, PR 상세, Evaluation, 검색·필터 및 데이터 검증 구현',
   ],
   flow:['GitHub PR 이벤트','변경 코드(diff) 수집','Ruff·pytest 실행 및 결과 파싱','LLM 리뷰·테스트 초안 생성','게시 위치 검증 → PR 댓글·Discord 알림','평가 결과 JSON Export → React 대시보드'],
+  caseStudies:[
+    {title:'생성 테스트 Import 누락을 버그 검출로 오판하지 않기',problem:'초기 S01 평가에서 LLM이 대상 함수의 import를 빠뜨린 테스트를 생성했습니다. 실행 실패를 실제 버그 검출로 세면 평가가 왜곡됩니다.',solution:'각 pytest 초안에 독립 실행에 필요한 import를 명시하도록 프롬프트를 고치고, NameError·ModuleNotFoundError를 환경 오류로 분류했습니다.',result:'해당 최초 실행은 평가에서 제외하고 재실행 결과를 사용했습니다. 코드 오류와 테스트 실행 오류를 구별하도록 개선했습니다.'},
+    {title:'잘못된 기대값과 수정 코드 오탐 분석',problem:'생성 테스트 일부가 함수 계약보다 버그가 있는 현재 구현의 출력을 정답으로 취급해 수정 코드까지 실패시키는 사례가 있었습니다.',solution:'동일한 테스트 초안을 버그·수정 코드 쌍에 실행해 결과를 비교하고, 함수 계약과 결함 회귀 테스트를 우선하도록 생성 지침을 보완했습니다.',result:'기존 평가에서 30개 테스트 중 6개가 버그 실패·수정 통과, 6쌍 중 3쌍이 검출되었습니다. 프롬프트 보완 후 개선 효과는 아직 재측정하지 않았습니다.'},
+    {title:'AI 리뷰 위치 검증 및 댓글 중복 방지',problem:'LLM이 출력한 줄 번호가 실제 PR의 추가 코드와 일치하지 않거나, 워크플로 재실행으로 같은 댓글이 중복 게시될 위험이 있습니다.',solution:'diff의 파일·추가 줄을 대조한 뒤 유효한 항목만 게시하고, 고유 마커가 있는 기존 봇 댓글은 새로 생성하지 않고 갱신하도록 했습니다.',result:'합성 사례 실제 PR 평가에서 게시 위치 15/15개가 유효했고, 평가 PR 12건의 봇 댓글 중복이 0건이었습니다. 위치 검증은 지적 내용의 정확도 검증과 구분합니다.'},
+  ],
   results:[
     '2026.11.12 평가: 준비한 소형 합성 사례의 실제 GitHub PR 12건에서 AI 분석 12/12 성공',
     '사전 정의 버그 6/6 지적, 게시 위치 15/15 유효. 위치 유효성은 리뷰 내용의 정확성을 뜻하지 않습니다.',
@@ -155,6 +164,13 @@ export const planner: Project = {
     '로컬 SQLite와 배포용 PostgreSQL의 DB 어댑터 분리',
   ],
   flow:['HTML·CSS·Vanilla JavaScript 화면','Node.js API / Vercel Serverless Functions','OpenAI API 업무 추출','사용자 검수·수정 → 일정 확정','공통 프로필·세션 로직','DB 어댑터 → SQLite(로컬) / PostgreSQL(배포용)'],
+  caseStudies:[
+    {title:'오후 12시 이후 날짜가 넘어가는 오류와 시간 모델 정리',problem:'초기 플래너에서 오후 12시를 지나면 24시간이 아닌 12시간 만에 하루가 바뀐 것처럼 처리되는 오류를 경험했습니다.',solution:'현재 구현은 24시간제 HH:MM과 실제 날짜를 분리하고, 날짜·시각을 절대 분 단위로 비교합니다. 자정 이후 일정은 실제 시작·종료 날짜와 체크리스트 귀속 날짜를 별도로 관리합니다.',result:'현재 코드에 24시간 범위 검증, 자정 횡단 일정 비교, 새벽 0~4시의 전날 플래너 귀속 규칙이 반영되어 있습니다. 과거 오류를 만든 최초 코드의 정확한 원인은 별도 기록으로 확인하지 못했습니다.'},
+    {title:'페이지를 켜 둔 채 자정을 넘겨도 오늘 날짜 갱신',problem:'초기에는 페이지를 처음 열 때 계산한 날짜가 유지되어, 자정을 넘겨도 오늘 화면이 이전 날짜로 남는 문제가 있었습니다.',solution:'현재 날짜를 매번 계산하는 함수로 분리하고 30초 주기 검사·focus·visibilitychange 이벤트로 날짜 전환을 감지합니다. 입력·수정 화면이 열린 경우에는 사용자의 입력을 보호하도록 갱신을 보류합니다.',result:'현재 구현에서는 실제 자정의 달력 날짜와 오전 4시의 플래너 기준 날짜 변화를 각각 감지하고 관련 화면을 다시 그리도록 구성했습니다.'},
+    {title:'닉네임 중복·세션·관리자 인증의 경계',problem:'계정별 일정을 저장하려면 닉네임 오타·대소문자 중복·세션 만료·일반 사용자와 관리자 권한을 구분해야 했습니다.',solution:'trim·Unicode NFC 정규화와 소문자 비교 키를 사용하고 DB에 UNIQUE 제약조건을 두었습니다. 일반 사용자에게는 HttpOnly 쿠키 세션, 관리자에게는 별도 비밀번호(scrypt 해시)와 관리자 세션을 적용했습니다.',result:'가입 중 닉네임 중복은 HTTP 409, 미등록 닉네임 로그인은 404로 구분합니다. 일반 사용자 로그인은 닉네임만 사용하는 방식으로 계정 소유권 인증이 충분하지 않아 개선이 필요합니다.'},
+    {title:'동시 저장으로 최신 일정이 덮어써지는 문제',problem:'두 탭이 같은 프로필 버전을 읽고 서로 다른 변경을 저장하면 늦게 도착한 요청이 먼저 저장된 내용을 덮어쓸 수 있습니다.',solution:'SQLite·PostgreSQL 양쪽에 expectedRevision 일치 조건의 UPDATE를 구현하고 불일치 시 HTTP 409 Conflict와 현재 revision을 반환합니다.',result:'충돌을 조용히 덮어쓰지 않고 사용자에게 최신 데이터 확인 후 재시도를 안내하도록 구성했습니다.'},
+    {title:'서버와 브라우저 시간대 차이',problem:'Vercel 서버가 UTC 기준으로 동작할 때 한국 자정 이후 자연어의 오늘·내일을 전날 기준으로 해석할 수 있습니다.',solution:'AI 업무 추출 요청 시작 시 브라우저 로컬 날짜를 clientDate로 전송하고, 서버는 이를 시스템 프롬프트의 기준 날짜로 우선 사용하도록 했습니다.',result:'서버 시간대에 관계없이 사용자 브라우저 날짜를 기준으로 상대 날짜를 해석하도록 구현했습니다. 자동화된 시간대 회귀 테스트는 추가 과제입니다.'},
+  ],
   engineering:[
     '클라이언트의 expectedRevision과 저장된 revision이 일치할 때만 UPDATE하도록 두 DB 어댑터에 조건부 갱신 구현',
     '동시 수정 충돌은 HTTP 409 Conflict와 currentRevision으로 반환하여 기존 데이터를 무조건 덮어쓰지 않도록 처리',
@@ -180,9 +196,9 @@ export const allProjects = [teamsync, planner, experience, projects[0], projects
 export interface Skill { name: string; }
 // Exact Notion inventory supplied by the user; no project proficiency is implied.
 export const skillGroups: {title:string; subtitle:string; skills:Skill[]}[] = [
-  {title:'Languages',subtitle:'',skills:[{name:'Python'},{name:'C'},{name:'Java'},{name:'TypeScript'}]},
-  {title:'Web',subtitle:'',skills:[{name:'JSP'},{name:'Vite'},{name:'Tailwind CSS'}]},
-  {title:'DB',subtitle:'SQL 기반 데이터 조회 및 관리',skills:[{name:'Oracle'},{name:'MySQL'}]},
-  {title:'AI & Data',subtitle:'',skills:[{name:'PyTorch'},{name:'TensorFlow'},{name:'Hugging Face Transformers'}]},
-  {title:'Development Tools',subtitle:'',skills:[{name:'Linux'},{name:'Git'},{name:'GitHub'}]},
+  {title:'Languages',subtitle:'프로젝트 구현 및 수업',skills:[{name:'Python'},{name:'TypeScript'},{name:'JavaScript'},{name:'C'},{name:'Java'}]},
+  {title:'Web / Backend',subtitle:'웹서비스와 자동화 프로젝트',skills:[{name:'React'},{name:'Node.js'},{name:'Vite'},{name:'Tailwind CSS'},{name:'HTML/CSS'},{name:'JSP'}]},
+  {title:'Database',subtitle:'PostgreSQL·SQLite 프로젝트 / Oracle·MySQL 학습',skills:[{name:'PostgreSQL'},{name:'SQLite'},{name:'Oracle'},{name:'MySQL'}]},
+  {title:'AI & Data',subtitle:'모델 학습 및 평가',skills:[{name:'PyTorch'},{name:'TensorFlow'},{name:'Hugging Face Transformers'}]},
+  {title:'Development Tools',subtitle:'개발·협업 환경',skills:[{name:'Linux'},{name:'Git'},{name:'GitHub'}]},
 ];
