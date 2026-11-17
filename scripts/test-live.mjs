@@ -71,9 +71,9 @@ try {
     return c.getContext('2d').getImageData(0, 0, c.width, c.height).data.some((v, i) => i % 4 === 3 && v > 0);
   });
   await go('/'); await page.waitForTimeout(1100);
-  await check('Hero and exact 15 technology cards', async () => {
+  await check('Hero and updated technology cards', async () => {
     assert((await page.locator('h1').innerText()).includes('CHUNG'));
-    assert.deepEqual(await page.locator('#skills .skill-name').allTextContents(), ['Python','C','Java','TypeScript','JSP','Vite','Tailwind CSS','Oracle Database','MySQL','PyTorch','TensorFlow','Hugging Face Transformers','Linux','Git','GitHub']);
+    assert.deepEqual(await page.locator('#skills .skill-name').allTextContents(), ['Python','TypeScript','JavaScript','C','Java','React','Node.js','Vite','Tailwind CSS','HTML/CSS','JSP','PostgreSQL','SQLite','Oracle Database','MySQL','PyTorch','TensorFlow','Hugging Face Transformers','Linux','Git','GitHub']);
     assert.equal(await page.locator('.project-card').count(), projects.length);
     assert.deepEqual(await page.locator('.project-card').evaluateAll(cards=>cards.map(c=>c.dataset.project)),requiredOrder);
     assert.equal(await page.locator('.tech-category').count(),5);
