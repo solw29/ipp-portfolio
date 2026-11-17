@@ -3,7 +3,7 @@ export const profile = {
   university: '동덕여자대학교', major: '데이터사이언스 전공 · 컴퓨터학 복수전공 승인 (2027학년도 1학기부터 이수 예정)',
   role: 'SW Development / Data & AI', email: 'minteugene59@gmail.com',
   github: 'https://github.com/solw29',
-  introduction: '웹 화면·API·DB를 직접 구현하고, AI의 결과를 테스트와 실험 지표로 검증하며 사용자가 확인할 수 있는 흐름으로 연결해 왔습니다.',
+  introduction: '막히는 문제는 원인부터 살펴보고, 배운 것은 팀과 나눕니다. 맡은 역할에 책임을 갖고 함께 결과물을 완성하는 개발자입니다.',
 };
 // Company-neutral public defaults; optional application copy must be explicitly configured.
 export const contentSettings = {
@@ -196,9 +196,9 @@ export const allProjects = [teamsync, planner, experience, projects[0], projects
 export interface Skill { name: string; }
 // Exact Notion inventory supplied by the user; no project proficiency is implied.
 export const skillGroups: {title:string; subtitle:string; skills:Skill[]}[] = [
-  {title:'Languages',subtitle:'프로젝트 구현 및 수업',skills:[{name:'Python'},{name:'TypeScript'},{name:'JavaScript'},{name:'C'},{name:'Java'}]},
-  {title:'Web / Backend',subtitle:'웹서비스와 자동화 프로젝트',skills:[{name:'React'},{name:'Node.js'},{name:'Vite'},{name:'Tailwind CSS'},{name:'HTML/CSS'},{name:'JSP'}]},
-  {title:'Database',subtitle:'PostgreSQL·SQLite 프로젝트 / Oracle·MySQL 학습',skills:[{name:'PostgreSQL'},{name:'SQLite'},{name:'Oracle'},{name:'MySQL'}]},
-  {title:'AI & Data',subtitle:'모델 학습 및 평가',skills:[{name:'PyTorch'},{name:'TensorFlow'},{name:'Hugging Face Transformers'}]},
-  {title:'Development Tools',subtitle:'개발·협업 환경',skills:[{name:'Linux'},{name:'Git'},{name:'GitHub'}]},
+  {title:'Languages',subtitle:'',skills:[{name:'Python'},{name:'TypeScript'},{name:'JavaScript'},{name:'C'},{name:'Java'}]},
+  {title:'Web / Backend',subtitle:'',skills:[{name:'React'},{name:'Node.js'},{name:'Vite'},{name:'Tailwind CSS'},{name:'HTML/CSS'},{name:'JSP'}]},
+  {title:'Database',subtitle:'',skills:[{name:'PostgreSQL'},{name:'SQLite'},{name:'Oracle'},{name:'MySQL'}]},
+  {title:'AI & Data',subtitle:'',skills:[{name:'PyTorch'},{name:'TensorFlow'},{name:'Hugging Face Transformers'}]},
+  {title:'Development Tools',subtitle:'',skills:[{name:'Linux'},{name:'Git'},{name:'GitHub'}]},
 ];
