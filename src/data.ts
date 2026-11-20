@@ -48,7 +48,7 @@ export const projects: Project[] = [
     period: '2026.09 — 2026.11', team: '2인 연구형 캡스톤', status: '투고·포스터 발표 완료', ongoing: false,
     summary: '상품 설명과 리뷰가 상충하거나 근거가 부족할 때, 답변 방식을 조절하는 RAG를 연구했습니다.',
     cardTags: ['Python','PyTorch','Hugging Face','scikit-learn','OpenAI API'],
-    links: [{label:'Research Poster',url:'/documents/ack-2026-poster.pdf'}],
+    links: [{label:'Research Poster',url:'/documents/ack-2026-poster.pdf'},{label:'Research Paper',url:'/documents/ack-2026-paper.pdf'}],
     role: '데이터 라벨링 · 근거 상태 분류 · 비교 실험', tags: ['Python', 'PyTorch', 'Hugging Face Transformers', 'scikit-learn', 'OpenAI API'],
     outcome: '분류 오류가 답변 품질의 병목임을 비교 실험으로 확인',
     context: '상품 설명과 사용자 리뷰가 서로 다르거나 질문에 답할 근거가 부족한 상황을 다뤘습니다. 근거 상태를 분류하고 그에 맞춰 답변하도록 하는 접근을 비교했습니다.',

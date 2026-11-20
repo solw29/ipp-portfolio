@@ -189,7 +189,25 @@ try {
         await page.waitForFunction(()=>document.querySelector('video').currentTime>0.1);
         await page.locator('video').evaluate(v=>v.pause());
       }
-      if (slug === 'shopping-qa') assert.equal((await page.request.get(`${base}/documents/ack-2026-poster.pdf`)).status(), 200);
+      if (slug === 'shopping-qa') {
+        assert.equal(await page.locator('.research-document-card').count(),2);
+        const cards=await page.locator('.research-document-card').all();
+        const boxes=await Promise.all(cards.map(c=>c.boundingBox()));
+        assert(Math.abs(boxes[0].y-boxes[1].y)<1,'Desktop poster and paper must share a row');
+        assert(boxes[1].x>boxes[0].x,'Paper must follow the poster in the second column');
+        for(const image of await page.locator('.research-document-preview img').all()){
+          await image.scrollIntoViewIfNeeded();
+          assert(await image.evaluate(async el=>{
+            await el.decode();const r=el.getBoundingClientRect();
+            return el.naturalWidth>0 && Math.abs(r.width/r.height-el.naturalWidth/el.naturalHeight)<.01 && getComputedStyle(el).maxHeight==='none';
+          }),'Research preview must preserve its portrait ratio without a landscape frame');
+        }
+        for(const file of ['ack-2026-poster.pdf','ack-2026-paper.pdf']){
+          const response=await page.request.get(`${base}/documents/${file}`);
+          assert.equal(response.status(),200);assert((await response.headers()['content-type']).includes('application/pdf'));
+          assert((await response.body()).subarray(0,5).toString()==='%PDF-');
+        }
+      }
     }
   });
   await check('Internal navigation, download and evidence file paths',async()=>{
