@@ -94,3 +94,13 @@ html[data-theme=light] .syntax-value{color:#246876}
 .engineering-notes h3{font-size:17px;font-weight:500;color:var(--text-primary)}
 .engineering-notes ul{margin-bottom:0}
 @media(max-width:639px){.project-text-visual{gap:14px;padding:24px 22px 60px}.project-text-visual small{font-size:8px}.project-text-visual strong{font-size:30px}.planner-flow{gap:8px;font-size:11px}.planner-flow span{padding:7px 10px}.project-card .tags span{font-size:10px}.card-team{font-size:11px}.project-links .button{min-height:44px}.engineering-notes{padding:18px}}
+
+/* About work principles share the existing Graphite Cyan typography and spacing. */
+.how-i-work{grid-column:1/-1;min-width:0;margin-top:64px;padding-top:40px;border-top:1px solid var(--border-default)}
+.how-i-work h3{font:500 clamp(28px,3vw,36px)/1.4 var(--display);margin:0 0 26px;letter-spacing:-.04em}
+.work-principles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.work-principles article{min-width:0;padding:26px;border:1px solid var(--border-default);border-radius:12px;background:var(--bg-secondary)}
+.work-principles h4{font-size:17px;line-height:1.7;font-weight:600;letter-spacing:-.03em;margin:0 0 14px;color:var(--text-primary)}
+.work-principles p{font-size:14px;line-height:1.9;color:var(--text-secondary)}
+@media(max-width:1023px){.work-principles{grid-template-columns:minmax(0,1fr);gap:16px}}
+@media(max-width:639px){.how-i-work{margin-top:40px;padding-top:30px}.work-principles article{padding:22px}.work-principles h4{font-size:16px}}

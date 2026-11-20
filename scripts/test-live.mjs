@@ -77,7 +77,13 @@ try {
     assert.equal(await page.locator('.project-card').count(), projects.length);
     assert.deepEqual(await page.locator('.project-card').evaluateAll(cards=>cards.map(c=>c.dataset.project)),requiredOrder);
     assert.equal(await page.locator('.tech-category').count(),5);
-    assert((await page.locator('.education-note').innerText()).includes('2027학년도 1학기부터 이수 예정'));
+    assert((await page.locator('.hero-description').innerText()).includes('일상에서 느낀 불편함을 개발로 해결해 보는 것을 좋아합니다.'));
+    assert((await page.locator('.hero-description').innerText()).includes('필요한 기술을 하나씩 배우며 아이디어를 실제 기능으로 만들어 갑니다.'));
+    assert.equal(await page.locator('.about-lead').innerText(),'작은 아이디어도 실제로 구현하는 여러 프로젝트를 경험하며 개발자로서의 방향을 찾아가고 있습니다.');
+    assert.equal(await page.locator('#how-i-work-title').innerText(),'How I Work.');
+    assert.equal(await page.locator('.work-principles article').count(),3);
+    assert.equal(await page.locator('#tech-group-2').innerText(),'DB');
+    assert.equal(await page.locator('#tech-group-2').locator('..').locator('p').count(),0);
     assert.equal(await page.locator('.hero-target').count(),0);
     for(const p of projects){
       const card=page.locator(`[data-project="${p.slug}"]`);

@@ -3,7 +3,7 @@ export const profile = {
   university: '동덕여자대학교', major: '데이터사이언스 전공 · 컴퓨터학 복수전공 승인 (2027학년도 1학기부터 이수 예정)',
   role: 'SW Development / Data & AI', email: 'minteugene59@gmail.com',
   github: 'https://github.com/solw29',
-  introduction: '웹서비스의 화면·API·DB를 구현하고, AI 자동화와 데이터·모델 실험으로 동작과 결과를 검증해 왔습니다.',
+  introduction: '필요한 기술을 하나씩 배우며 아이디어를 실제 기능으로 만들어 갑니다.',
 };
 // Company-neutral public defaults; optional application copy must be explicitly configured.
 export const contentSettings = {
@@ -182,7 +182,7 @@ export interface Skill { name: string; }
 export const skillGroups: {title:string; subtitle:string; skills:Skill[]}[] = [
   {title:'Languages',subtitle:'',skills:[{name:'Python'},{name:'C'},{name:'Java'},{name:'TypeScript'}]},
   {title:'Web',subtitle:'',skills:[{name:'JSP'},{name:'Vite'},{name:'Tailwind CSS'}]},
-  {title:'DB',subtitle:'SQL 기반 데이터 조회 및 관리',skills:[{name:'Oracle'},{name:'MySQL'}]},
+  {title:'DB',subtitle:'',skills:[{name:'Oracle'},{name:'MySQL'}]},
   {title:'AI & Data',subtitle:'',skills:[{name:'PyTorch'},{name:'TensorFlow'},{name:'Hugging Face Transformers'}]},
   {title:'Development Tools',subtitle:'',skills:[{name:'Linux'},{name:'Git'},{name:'GitHub'}]},
 ];
